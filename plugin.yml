@@ -1,0 +1,8 @@
+name: VipSystem
+version: 0.1 Beta
+author: Soldier
+depend: [Vault]
+main: me.zhanshi123.VipSystem.Main
+commands:
+  vipsys:
+    usage: /vipsys
