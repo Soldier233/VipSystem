@@ -47,6 +47,7 @@ public class DataBase {
 			}
 			statement = conn.createStatement();
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(10) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`player`));");
 			statement.close();
 			return true;
 		} catch (ClassNotFoundException | SQLException e) {
@@ -162,6 +163,18 @@ public class DataBase {
 	} catch (SQLException e) {
 		e.printStackTrace();
 	}
+	}
+	public void insertKey(String key,String group,String day)
+	{
+		try {
+			ResultSet rs=statement.executeQuery("select * from vipkeys where key = '"+key+"'");
+			if(!rs.next())
+			{
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	public void setGroup(String name,String group)
 	{

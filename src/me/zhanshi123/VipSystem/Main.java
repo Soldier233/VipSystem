@@ -47,9 +47,10 @@ public class Main extends JavaPlugin
 		List<String> info=cm.getMySQL();
 		String type=cm.getType();
 		db=new DataBase(plugin,type);
+		String url="jdbc:mysql://"+info.get(0)+":"+info.get(1)+"/"+info.get(2);
 		if(type.equals("mysql"))
 		{
-			db.MySQL(info.get(0), info.get(1), info.get(2));
+			db.MySQL(url, info.get(3), info.get(4));
 		}
 		if(!db.init())
 		{
@@ -63,11 +64,13 @@ public class Main extends JavaPlugin
 	{
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&l==========&a&lVipSystem&6&l=========="));
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys viptime &9&l查询剩余VIP天数"));
+		//sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys key <CDK> &9&l使用cdk"));
 		if(sender.isOp())
 		{
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys look <玩家名> &9&l查询指定玩家VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys give <玩家名> <VIP组> <天数> &9&l给目标玩家指定天数的VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys remove <玩家名> &9&l移除目标玩家的VIP"));
+			//sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys createkey <数量> <VIP组> <天数> &9&l使用cdk"));
 		}	
 	}
 	public boolean onCommand(CommandSender sender,Command cmd,String label,String[] args)

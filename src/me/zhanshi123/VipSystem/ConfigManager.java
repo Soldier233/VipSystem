@@ -15,6 +15,10 @@ public class ConfigManager {
 		this.p=p;
 		config=p.getConfig();
 	}
+	public String getKeyWords()
+	{
+		return config.getString("Config.KeyWord");
+	}
 	public String getDefault()
 	{
 		return config.getString("Config.Default");
@@ -47,9 +51,11 @@ public class ConfigManager {
 	public List<String> getMySQL()
 	{
 		List<String> text=new ArrayList<String>();
-		text.add(config.getString("Config.Database.MySQL.addr"));
-		text.add(config.getString("Config.Database.MySQL.user"));
-		text.add(config.getString("Config.Database.MySQL.pwd"));
+		text.add(config.getString("Config.Database.MySQL.addr"));//0
+		text.add(config.getString("Config.Database.MySQL.port"));//1
+		text.add(config.getString("Config.Database.MySQL.base"));//2
+		text.add(config.getString("Config.Database.MySQL.user"));//3
+		text.add(config.getString("Config.Database.MySQL.pwd"));//4
 		return text;
 	}
 }
