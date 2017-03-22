@@ -23,10 +23,6 @@ public class ConfigManager {
 	{
 		return config.getString("Config.Default");
 	}
-	public List<String> getRanks()
-	{
-		return config.getStringList("Config.Ranks");
-	}
 	public String getMessage(String path)
 	{
 		String text=config.getString("Message."+path);

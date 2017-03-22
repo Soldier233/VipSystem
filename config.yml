@@ -4,7 +4,7 @@ Config:
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
   DataBase:
     Type: sqlite
-    #填写sqlite或mysql(还没做好)
+    #填写sqlite或mysql
     #填写mysql需填写下方连接信息
     #MySQL:
       addr: 127.0.0.1

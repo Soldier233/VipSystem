@@ -2,6 +2,7 @@ package me.zhanshi123.VipSystem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,7 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,7 +24,16 @@ public class DataBase {
 	String pwd,user;
 	Connection conn=null;
 	Statement statement=null;
+	PreparedStatement pst=null;
 	Plugin p=null;
+	HashMap<String,Info> data;
+	public void getCache()
+	{
+		Long time=Utils.saveCache(conn, data);
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
+		Cache ca=new Cache(conn);
+		data=ca.getData();
+	}
 	public DataBase(Plugin p,String type)
 	{
 		this.p=p;
@@ -63,41 +75,24 @@ public class DataBase {
 	public List<String> getDate(String name)
 	{
 		List<String> date=new ArrayList<String>();
-		try {
-			statement=conn.createStatement();
-			ResultSet result=statement.executeQuery("select * from players where player='"+name+"'");
-			if(!result.next())
-			{
-				date=null;
-			}
-			else
-			{
-				date.add(result.getString("year"));
-				date.add(result.getString("month"));
-				date.add(result.getString("day"));
-				date.add(result.getString("left"));
-			}
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			date=null;
+		if(data.containsKey(name))
+		{
+			Info info=data.get(name);
+			date.add(String.valueOf(info.getYear()));
+			date.add(String.valueOf(info.getMonth()));
+			date.add(String.valueOf(info.getDay()));
+			date.add(String.valueOf(info.getLeft()));
+		}
+		else
+		{
+			data=null;
 		}
 		return date;
 	}
 	public String getGroup(String name)
 	{
 		String group=null;
-		try {
-			statement=conn.createStatement();
-			ResultSet result=statement.executeQuery("select * from players where player='"+name+"'");
-			if(result.next())
-			{
-				group=result.getString("vipg");
-			}
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		group=data.get(name).getGroup();
 		return group;
 	}
 	public void addVip(String name,String group,String day)
@@ -113,28 +108,12 @@ public class DataBase {
 	}
 	public void mkdir(String name)
 	{
-		try {
-			statement=conn.createStatement();
-			statement.executeUpdate("INSERT INTO players VALUES ('" +name+ "', '0','0','0','0','0')");
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		data.put(name, new Info(name,0,0,0,"0",0));
 	}
 	public boolean exists(String name)
 	{
 		boolean ex=false;
-		try {
-			statement=conn.createStatement();
-			ResultSet result=statement.executeQuery("select * from players where player='"+name+"'");
-			if(result.next())
-			{
-				ex=true;
-			}
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		ex=data.containsKey("name");
 		return ex;
 	}
 	public void setDate(String name,String year,String month,String day,String left)
@@ -143,26 +122,22 @@ public class DataBase {
 		{
 			mkdir(name);
 		}
-		try {
-			statement=conn.createStatement();
-			statement.executeUpdate("UPDATE players SET year = '"+year+"' WHERE player = '"+name+"';");
-			statement.executeUpdate("UPDATE players SET month = '"+month+"' WHERE player = '"+name+"';");
-			statement.executeUpdate("UPDATE players SET day = '"+day+"' WHERE player = '"+name+"';");
-			statement.executeUpdate("UPDATE players SET left = '"+left+"' WHERE player = '"+name+"';");
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Info info=data.get(name);
+		info.setYear(Integer.valueOf(year));
+		info.setMonth(Integer.valueOf(month));
+		info.setDay(Integer.valueOf(day));
+		info.setLeft(Integer.valueOf(left));
 	}
 	public void removeVip(String name)
 	{
-		try {
-		statement=conn.createStatement();
-		statement.executeUpdate("DELETE FROM players WHERE player = '"+name+"'");
-		statement.close();
-	} catch (SQLException e) {
-		e.printStackTrace();
+		Info info=data.get(name);
+		info.setLeft(0);
 	}
+	public boolean hasKey(String key)
+	{
+		boolean result=false;
+		
+		return result;
 	}
 	public void insertKey(String key,String group,String day)
 	{
@@ -170,7 +145,7 @@ public class DataBase {
 			ResultSet rs=statement.executeQuery("select * from vipkeys where key = '"+key+"'");
 			if(!rs.next())
 			{
-				
+				statement.executeUpdate("");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
