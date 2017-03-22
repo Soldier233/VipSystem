@@ -34,6 +34,10 @@ public class Main extends JavaPlugin
     }
     DataBase db=null;
 	ConfigManager cm=null;
+	public void onDisable()
+	{
+		db.getCache();
+	}
 	public void onEnable()
 	{
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l≤Âº˛º”‘ÿ÷–..."));
@@ -186,12 +190,24 @@ public class Main extends JavaPlugin
 						}
 					}
 				}
+				else if(args[0].equalsIgnoreCase("key"))
+				{
+					String cdk=args[1];
+					
+				}
 			}
 		}
 		return true;
 	}
 	public void RegisterTasks()
 	{
+		new BukkitRunnable()
+		{
+			public void run()
+			{
+				db.getCache();
+			}
+		}.runTaskTimer(plugin, 20*300L, 20*300L);
 		new BukkitRunnable()
 		{
 			public void run()
