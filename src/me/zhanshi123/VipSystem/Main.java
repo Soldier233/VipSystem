@@ -34,6 +34,10 @@ public class Main extends JavaPlugin
     }
     DataBase db=null;
 	ConfigManager cm=null;
+	public void onDisable()
+	{
+		db.getCache();
+	}
 	public void onEnable()
 	{
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载中..."));
@@ -50,12 +54,17 @@ public class Main extends JavaPlugin
 		String url="jdbc:mysql://"+info.get(0)+":"+info.get(1)+"/"+info.get(2);
 		if(type.equals("mysql"))
 		{
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem] &a&l尝试向"+url+"建立MySQL连接，使用用户"+info.get(3)));
 			db.MySQL(url, info.get(3), info.get(4));
 		}
 		if(!db.init())
 		{
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l插件发生致命错误，停止加载!"));
 			setEnabled(false);
+		}
+		else
+		{
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem] &a&l数据库连接成功"));
 		}
 		RegisterTasks();
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载完毕 作者QQ 1224954468 技术交流群563012939"));
@@ -70,6 +79,7 @@ public class Main extends JavaPlugin
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys look <玩家名> &9&l查询指定玩家VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys give <玩家名> <VIP组> <天数> &9&l给目标玩家指定天数的VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys remove <玩家名> &9&l移除目标玩家的VIP"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys save &9&l立即保存缓存(默认5分钟一次)"));
 			//sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys createkey <数量> <VIP组> <天数> &9&l使用cdk"));
 		}	
 	}
@@ -151,6 +161,11 @@ public class Main extends JavaPlugin
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+name+"没有VIP"));	
 					}
 				}
+				else if(args[0].equalsIgnoreCase("save")&&sender.isOp())
+				{
+					db.getCache();
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l保存完成!"));	
+				}
 				else if(args[0].equalsIgnoreCase("viptime"))
 				{
 					if(sender instanceof Player)
@@ -186,12 +201,24 @@ public class Main extends JavaPlugin
 						}
 					}
 				}
+				else if(args[0].equalsIgnoreCase("key"))
+				{
+					String cdk=args[1];
+					
+				}
 			}
 		}
 		return true;
 	}
 	public void RegisterTasks()
 	{
+		new BukkitRunnable()
+		{
+			public void run()
+			{
+				db.getCache();
+			}
+		}.runTaskTimer(plugin, 0L, 20*300L);
 		new BukkitRunnable()
 		{
 			public void run()
