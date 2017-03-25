@@ -1,9 +1,9 @@
 package me.zhanshi123.VipSystem;
 
 public class Info {
-	int year,month,day,left;
+	int year,month,day,left,expired;
 	String player,group;
-	public Info(String player,int year,int month,int day,String group,int left)
+	public Info(String player,int year,int month,int day,String group,int left,int expired)
 	{
 		this.player=player;
 		this.year=year;
@@ -11,6 +11,15 @@ public class Info {
 		this.day=day;
 		this.group=group;
 		this.left=left;
+		this.expired=expired;
+	}
+	public int getExpired()
+	{
+		return expired;
+	}
+	public void setExpired(int expired)
+	{
+		this.expired=expired;
 	}
 	public String getPlayer()
 	{
@@ -63,7 +72,7 @@ public class Info {
 	public String getInfoString()
 	{
 		StringBuilder sb=new StringBuilder();
-		sb.append(player).append(",").append(year).append(",").append(month).append(",").append(day).append(",").append(left).append(",").append(group);
+		sb.append(player).append(",").append(year).append(",").append(month).append(",").append(day).append(",").append(left).append(",").append(group).append(",").append(expired);
 		return sb.toString();
 	}
 }

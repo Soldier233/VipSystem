@@ -26,7 +26,7 @@ public class DataBase {
 	Statement statement=null;
 	PreparedStatement pst=null;
 	Plugin p=null;
-	HashMap<String,Info> data;
+	HashMap<String,Info> data=new HashMap<String,Info>();
 	public void getCache()
 	{
 		Long time=Utils.saveCache(conn, data);
@@ -58,8 +58,8 @@ public class DataBase {
 				conn = DriverManager.getConnection(addr,user,pwd);
 			}
 			statement = conn.createStatement();
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(10) NOT NULL,PRIMARY KEY (`player`));");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(10) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
 			return true;
 		} catch (ClassNotFoundException | SQLException e) {
@@ -105,15 +105,28 @@ public class DataBase {
 		}
 		setDate(name, String.valueOf(date.getYear()+1900), String.valueOf(date.getMonth()+1), String.valueOf(date.getDate()), String.valueOf(old+Integer.valueOf(day)));
 		setGroup(name,group);
+		setExpired(name,0);
 	}
 	public void mkdir(String name)
 	{
-		data.put(name, new Info(name,0,0,0,"0",0));
+		data.put(name, new Info(name,0,0,0,"0",0,1));
+	}
+	public int getExpired(String name)
+	{
+		Info info=data.get(name);
+		return info.getExpired();
+	}
+	public void setExpired(String name,int expired)
+	{
+		Info info=data.get(name);
+		info.setExpired(expired);
+		data.remove(name);
+		data.put(name, info);
 	}
 	public boolean exists(String name)
 	{
 		boolean ex=false;
-		ex=data.containsKey("name");
+		ex=data.containsKey(name);
 		return ex;
 	}
 	public void setDate(String name,String year,String month,String day,String left)
@@ -127,11 +140,16 @@ public class DataBase {
 		info.setMonth(Integer.valueOf(month));
 		info.setDay(Integer.valueOf(day));
 		info.setLeft(Integer.valueOf(left));
+		data.remove(name);
+		data.put(name, info);
 	}
 	public void removeVip(String name)
 	{
 		Info info=data.get(name);
 		info.setLeft(0);
+		info.setExpired(1);
+		data.remove(name);
+		data.put(name, info);
 	}
 	public boolean hasKey(String key)
 	{
@@ -153,13 +171,10 @@ public class DataBase {
 	}
 	public void setGroup(String name,String group)
 	{
-		try {
-			statement=conn.createStatement();
-			statement.executeUpdate("UPDATE players SET vipg = '"+group+"' WHERE player = '"+name+"';");
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		Info info=data.get(name);
+		info.setGroup(group);
+		data.remove(name);
+		data.put(name, info);
 	}
 	//Return true if is passed
 	public boolean isPassed(String name)

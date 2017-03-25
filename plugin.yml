@@ -1,5 +1,5 @@
 name: VipSystem
-version: 0.3
+version: 1.0
 author: Soldier
 depend: [Vault]
 main: me.zhanshi123.VipSystem.Main
