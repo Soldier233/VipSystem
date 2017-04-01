@@ -1,9 +1,6 @@
 package me.zhanshi123.VipSystem;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,12 +14,12 @@ public class Utils {
 	public static long saveCache(Connection conn,HashMap<String,Info> data)
 	{
 		long starttime=System.currentTimeMillis();
-		List<String> players=new ArrayList<String>();
+		List<String> players=new ArrayList<>();
 		Iterator<Entry<String,Info>> i=data.entrySet().iterator();
 		while(i.hasNext())
 		{
 			Entry<String,Info> e=i.next();
-			String name=(String) e.getKey();
+			String name=e.getKey();
 			players.add(name);
 		}
 		
@@ -44,9 +41,12 @@ public class Utils {
 						String sql="update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' , expired = '"+info.getExpired()+"' where player = '"+name+"';";
 						Bukkit.getConsoleSender().sendMessage("¸üÐÂÍæ¼ÒÓï¾ä "+sql);
 					}
-					PreparedStatement st=conn.prepareStatement("update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
-					st.executeUpdate();
-					st.close();
+					//PreparedStatement st=conn.prepareStatement("UPDATE players SET year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
+					Statement statement = conn.createStatement();
+					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',left='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='' WHERE player='"+name+"';");
+					statement.close();
+					//st.executeUpdate();
+					//st.close();
 				}
 				else
 				{
