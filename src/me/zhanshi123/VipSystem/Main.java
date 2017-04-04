@@ -13,6 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,6 +39,7 @@ public class Main extends JavaPlugin
 	public void onDisable()
 	{
 		db.getCache();
+		Bukkit.getScheduler().cancelTasks(plugin);
 	}
 	public void onEnable()
 	{
@@ -119,7 +122,7 @@ public class Main extends JavaPlugin
 				else if(args[0].equalsIgnoreCase("remove")&&sender.isOp())
 				{
 					String name=args[1];
-					if(db.exists(name))
+					if(db.getExpired(name)==0)
 					{
 						removeVip(Bukkit.getPlayer(name));
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功移除指定玩家的VIP"));	
@@ -134,7 +137,7 @@ public class Main extends JavaPlugin
 					String name=args[1];
 					String group=null;
 					long days=0;
-					if(db.exists(name))
+					if(db.getExpired(name)==0)
 					{
 						List<String> date=db.getDate(name);
 						String year=date.get(0);
@@ -173,7 +176,7 @@ public class Main extends JavaPlugin
 						Player p=(Player) sender;
 						String name=p.getName();
 						long days=0;
-						if(db.exists(name))
+						if(db.getExpired(name)==0)
 						{
 							List<String> date=db.getDate(name);
 							String year=date.get(0);
@@ -229,6 +232,11 @@ public class Main extends JavaPlugin
 					String name=x.getName();
 					if(db.exists(name))
 					{
+						if(!db.getGroup(name).equalsIgnoreCase(perm.getPrimaryGroup(x)))
+						{
+							perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
+							perm.playerAddGroup(x, db.getGroup(name));
+						}
 						if(db.isPassed(name))
 						{
 							removeVip(x);
@@ -250,5 +258,23 @@ public class Main extends JavaPlugin
 		perm.playerRemoveGroup(p, db.getGroup(p.getName()));
 		perm.playerAddGroup(p, cm.getDefault());
 		db.removeVip(p.getName());
+	}
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e)
+	{
+		Player x=e.getPlayer();
+		String name=x.getName();
+		if(db.exists(name))
+		{
+			if(!db.getGroup(name).equalsIgnoreCase(perm.getPrimaryGroup(x)))
+			{
+				perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
+				perm.playerAddGroup(x, db.getGroup(name));
+			}
+			if(db.isPassed(name))
+			{
+				removeVip(x);
+			}
+		}
 	}
 }

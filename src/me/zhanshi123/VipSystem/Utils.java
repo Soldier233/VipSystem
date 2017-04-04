@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +14,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 
 public class Utils {
-	static boolean debug=true;
+	static boolean debug=false;
 	public static long saveCache(Connection conn,HashMap<String,Info> data)
 	{
 		long starttime=System.currentTimeMillis();
@@ -41,12 +42,12 @@ public class Utils {
 				{
 					if(debug)
 					{
-						String sql="update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' , expired = '"+info.getExpired()+"' where player = '"+name+"';";
+						String sql="UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';";
 						Bukkit.getConsoleSender().sendMessage("¸üÐÂÍæ¼ÒÓï¾ä "+sql);
 					}
-					PreparedStatement st=conn.prepareStatement("update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
-					st.executeUpdate();
-					st.close();
+					Statement statement = conn.createStatement();
+					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
+					statement.close();
 				}
 				else
 				{
@@ -65,6 +66,7 @@ public class Utils {
 				e.printStackTrace();
 			}
 		}
+		
 		long stoptime=System.currentTimeMillis();
 		return stoptime-starttime;
 	}

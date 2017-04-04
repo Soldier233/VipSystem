@@ -113,8 +113,16 @@ public class DataBase {
 	}
 	public int getExpired(String name)
 	{
-		Info info=data.get(name);
-		return info.getExpired();
+		if(exists(name))
+		{
+			Info info=data.get(name);
+			return info.getExpired();
+		}
+		else
+		{
+			return 1;
+		}
+		//1过期 0没过期
 	}
 	public void setExpired(String name,int expired)
 	{
