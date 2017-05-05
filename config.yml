@@ -1,6 +1,7 @@
+Version: 1.2
 Config:
   Default: default
-  #普通玩家的组
+  #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
   DataBase:
     Type: sqlite

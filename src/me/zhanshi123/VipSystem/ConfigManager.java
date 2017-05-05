@@ -19,6 +19,14 @@ public class ConfigManager {
 		this.p=p;
 		config=p.getConfig();
 	}
+	public String getVersion()
+	{
+		return config.getString("Version");
+	}
+	public void setVersion(String ver)
+	{
+		config.set("Version", ver);
+	}
 	public String getKeyWords()
 	{
 		return config.getString("Config.KeyWord");

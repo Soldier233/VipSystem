@@ -3,7 +3,6 @@ package me.zhanshi123.VipSystem;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -24,6 +23,14 @@ import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
 {
+	public static DataBase getDataBase()
+	{
+		return db;
+	}
+	public static ConfigManager getConfigManager()
+	{
+		return cm;
+	}
     Permission perm = null;
     Plugin plugin=this;
     private boolean setupPermissions()
@@ -34,8 +41,8 @@ public class Main extends JavaPlugin
         }
         return (perm != null);
     }
-    DataBase db=null;
-	ConfigManager cm=null;
+    private static DataBase db=null;
+    private static ConfigManager cm=null;
 	public void onDisable()
 	{
 		db.getCache();
@@ -249,14 +256,18 @@ public class Main extends JavaPlugin
 	public void addVip(String name,String group,String day)
 	{
 		Player p=Bukkit.getPlayer(name);
-		perm.playerRemoveGroup(p, cm.getDefault());
+		String last=perm.getPrimaryGroup(p);
+		perm.playerRemoveGroup(p, perm.getPrimaryGroup(p));
 		perm.playerAddGroup(p, group);
-		db.addVip(name, group, day);
+		db.addVip(name, group+"#"+last, day);
 	}
 	public void removeVip(Player p)
 	{
 		perm.playerRemoveGroup(p, db.getGroup(p.getName()));
-		perm.playerAddGroup(p, cm.getDefault());
+		if(cm.getDefault().equalsIgnoreCase("#last"))
+			perm.playerAddGroup(p, db.getLastGroup(p.getName()));
+		else
+			perm.playerAddGroup(p, cm.getDefault());
 		db.removeVip(p.getName());
 	}
 	@EventHandler

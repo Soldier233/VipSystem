@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,10 +28,13 @@ public class DataBase {
 	HashMap<String,Info> data=new HashMap<String,Info>();
 	public void getCache()
 	{
-		Long time=Utils.saveCache(conn, data);
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
+		Utils.saveCache(conn, data);
+		long start=System.currentTimeMillis();
 		Cache ca=new Cache(conn);
 		data=ca.getData();
+		long end=System.currentTimeMillis();
+		Long time=end-start;
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
 	}
 	public DataBase(Plugin p,String type)
 	{
@@ -91,9 +93,10 @@ public class DataBase {
 	}
 	public String getGroup(String name)
 	{
-		String group=null;
-		group=data.get(name).getGroup();
-		return group;
+		String group=data.get(name).getGroup();
+		int hashmark=group.indexOf('#');
+		String currentGroup=group.substring(0,hashmark);
+		return currentGroup;
 	}
 	public void addVip(String name,String group,String day)
 	{
@@ -106,6 +109,13 @@ public class DataBase {
 		setDate(name, String.valueOf(date.getYear()+1900), String.valueOf(date.getMonth()+1), String.valueOf(date.getDate()), String.valueOf(old+Integer.valueOf(day)));
 		setGroup(name,group);
 		setExpired(name,0);
+	}
+	public String getLastGroup(String name)
+	{
+		String group=data.get(name).getGroup();
+		int hashmark=group.indexOf('#');
+		String lastGroup=group.substring(hashmark+1,group.length());
+		return lastGroup;
 	}
 	public void mkdir(String name)
 	{
