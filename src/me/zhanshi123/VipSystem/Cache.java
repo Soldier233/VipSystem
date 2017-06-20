@@ -1,6 +1,7 @@
 package me.zhanshi123.VipSystem;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,6 +14,7 @@ public class Cache
 	boolean debug=false;
 	Connection conn=null;
 	Statement st=null;
+	Statement st1=null;
 	public Cache(Connection conn)
 	{
 		try
@@ -35,10 +37,19 @@ public class Cache
 			while(rs.next())
 			{
 				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
-				data.put(rs.getString("player"),info);
-				if(debug)
+				if(rs.getInt("expired")==1)
 				{
-					Bukkit.getConsoleSender().sendMessage(info.getInfoString());
+					st1=conn.createStatement();
+					st1.executeUpdate("delete from players where player = '"+info.getPlayer()+"';");
+					st1.close();
+				}
+				else
+				{
+					data.put(rs.getString("player"),info);
+					if(debug)
+					{
+						Bukkit.getConsoleSender().sendMessage(info.getInfoString());
+					}
 				}
 			}
 			st.close();

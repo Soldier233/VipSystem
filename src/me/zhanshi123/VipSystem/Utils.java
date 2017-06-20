@@ -4,25 +4,71 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class Utils {
-	static boolean debug=true;
+	public static long calculateLeftDays(Date now,String left)
+	{
+		GregorianCalendar gc=new GregorianCalendar(); 
+		gc.setTime(now);
+		gc.add(5,Integer.valueOf(left));
+		Date passed=gc.getTime();
+		long days=(passed.getTime()-new Date().getTime())/(1000*3600*24);
+		return days;
+	}
+	public static void addVip(String name,String group,String day)
+	{
+		Player p=Bukkit.getPlayer(name);
+		String last=Main.getPermission().getPrimaryGroup(p);
+		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
+		Main.getPermission().playerAddGroup(p, group);
+		Main.getDataBase().addVip(name, group+"#"+last, day);
+	}
+	public static void removeVip(Player p)
+	{
+		Main.getPermission().playerRemoveGroup(p, Main.getDataBase().getGroup(p.getName()));
+		if(Main.getConfigManager().getDefault().equalsIgnoreCase("#last"))
+			Main.getPermission().playerAddGroup(p, Main.getDataBase().getLastGroup(p.getName()));
+		else
+			Main.getPermission().playerAddGroup(p, Main.getConfigManager().getDefault());
+		Main.getDataBase().removeVip(p.getName());
+	}
+	public static void removeFromDatabase(Connection conn,String name)
+	{
+		try 
+		{
+			Statement st=conn.createStatement();
+			st.executeUpdate("delete from players where player = '"+name+"';");
+			st.close();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	static boolean debug=false;
 	public static long saveCache(Connection conn,HashMap<String,Info> data)
 	{
 		long starttime=System.currentTimeMillis();
-		List<String> players=new ArrayList<String>();
+		List<String> players=new ArrayList<>();
 		Iterator<Entry<String,Info>> i=data.entrySet().iterator();
 		while(i.hasNext())
 		{
 			Entry<String,Info> e=i.next();
-			String name=(String) e.getKey();
+			String name=e.getKey();
 			players.add(name);
 		}
 		
@@ -41,12 +87,18 @@ public class Utils {
 				{
 					if(debug)
 					{
-						String sql="update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' , expired = '"+info.getExpired()+"' where player = '"+name+"';";
+						String sql="UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';";
 						Bukkit.getConsoleSender().sendMessage("¸üÐÂÍæ¼ÒÓï¾ä "+sql);
 					}
-					PreparedStatement st=conn.prepareStatement("update players set year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
-					st.executeUpdate();
-					st.close();
+					Statement statement = conn.createStatement();
+					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
+					statement.close();
+					//PreparedStatement st=conn.prepareStatement("UPDATE players SET year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
+					statement = conn.createStatement();
+					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',left='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='' WHERE player='"+name+"';");
+					statement.close();
+					//st.executeUpdate();
+					//st.close();
 				}
 				else
 				{
@@ -65,6 +117,7 @@ public class Utils {
 				e.printStackTrace();
 			}
 		}
+		
 		long stoptime=System.currentTimeMillis();
 		return stoptime-starttime;
 	}

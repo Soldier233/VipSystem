@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,10 +28,13 @@ public class DataBase {
 	HashMap<String,Info> data=new HashMap<String,Info>();
 	public void getCache()
 	{
-		Long time=Utils.saveCache(conn, data);
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
+		Utils.saveCache(conn, data);
+		long start=System.currentTimeMillis();
 		Cache ca=new Cache(conn);
 		data=ca.getData();
+		long end=System.currentTimeMillis();
+		Long time=end-start;
+		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
 	}
 	public DataBase(Plugin p,String type)
 	{
@@ -91,9 +93,18 @@ public class DataBase {
 	}
 	public String getGroup(String name)
 	{
-		String group=null;
-		group=data.get(name).getGroup();
-		return group;
+		String group=data.get(name).getGroup();
+		String currentGroup;
+		if(group.contains("#"))
+		{
+			int hashmark=group.indexOf('#');
+			currentGroup=group.substring(0,hashmark);
+		}
+		else
+		{
+			currentGroup=group;
+		}
+		return currentGroup;
 	}
 	public void addVip(String name,String group,String day)
 	{
@@ -107,14 +118,29 @@ public class DataBase {
 		setGroup(name,group);
 		setExpired(name,0);
 	}
+	public String getLastGroup(String name)
+	{
+		String group=data.get(name).getGroup();
+		int hashmark=group.indexOf('#');
+		String lastGroup=group.substring(hashmark+1,group.length());
+		return lastGroup;
+	}
 	public void mkdir(String name)
 	{
 		data.put(name, new Info(name,0,0,0,"0",0,1));
 	}
 	public int getExpired(String name)
 	{
-		Info info=data.get(name);
-		return info.getExpired();
+		if(exists(name))
+		{
+			Info info=data.get(name);
+			return info.getExpired();
+		}
+		else
+		{
+			return 1;
+		}
+		//1过期 0没过期
 	}
 	public void setExpired(String name,int expired)
 	{
@@ -149,7 +175,7 @@ public class DataBase {
 		info.setLeft(0);
 		info.setExpired(1);
 		data.remove(name);
-		data.put(name, info);
+		Utils.removeFromDatabase(conn, name);
 	}
 	public boolean hasKey(String key)
 	{
