@@ -93,12 +93,6 @@ public class Utils {
 					Statement statement = conn.createStatement();
 					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
 					statement.close();
-					//PreparedStatement st=conn.prepareStatement("UPDATE players SET year = '"+info.getYear()+"' , month = '"+info.getMonth()+"' , day = '"+info.getDay()+"' , left = '"+info.getLeft()+"' , vipg = '"+info.getGroup()+"' where player = '"+name+"';");
-					statement = conn.createStatement();
-					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',left='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='' WHERE player='"+name+"';");
-					statement.close();
-					//st.executeUpdate();
-					//st.close();
 				}
 				else
 				{

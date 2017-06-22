@@ -17,6 +17,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.zhanshi123.VipSystem.hook.Papi;
 import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
@@ -83,7 +84,7 @@ public class Main extends JavaPlugin
 		String url="jdbc:mysql://"+info.get(0)+":"+info.get(1)+"/"+info.get(2);
 		if(type.equals("mysql"))
 		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem] &a&l尝试向"+url+"建立MySQL连接，使用用户"+info.get(3)));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l尝试向"+url+"建立MySQL连接，使用用户"+info.get(3)));
 			db.MySQL(url, info.get(3), info.get(4));
 		}
 		if(!db.init())
@@ -105,7 +106,7 @@ public class Main extends JavaPlugin
 		RegisterTasks();
 		if(initDatabase())
 		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem] &a&l数据库连接成功"));
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l数据库连接成功"));
 		}
 		else
 		{
@@ -114,6 +115,15 @@ public class Main extends JavaPlugin
 			return;
 		}
 		Metrics metrics = new Metrics(this);
+		boolean b=false;
+		if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
+		{
+			b=new Papi(this).hook();
+		}
+		if(b==false)
+		{
+			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l未找到PlaceholderAPI或链接失败!"));
+		}
 		long end=System.currentTimeMillis();
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载完成 用时"+(end-start)+"ms 作者QQ 1224954468 技术交流群563012939"));
 	}
