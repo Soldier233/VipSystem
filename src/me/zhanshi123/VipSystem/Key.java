@@ -4,6 +4,8 @@ import java.util.Random;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.zhanshi123.VipSystem.managers.ConfigManager;
+
 public class Key {
 	DataBase db=null;
 	ConfigManager cm=null;

@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.zhanshi123.VipSystem.hook.Papi;
+import me.zhanshi123.VipSystem.managers.ConfigManager;
 import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
@@ -101,6 +102,7 @@ public class Main extends JavaPlugin
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载中..."));
 		long start=System.currentTimeMillis();
 		initConfig();
+		cm.setVersion(getDescription().getVersion());
 		setupPermissions();
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
 		RegisterTasks();
@@ -145,7 +147,7 @@ public class Main extends JavaPlugin
 				}
 				else 
 				{
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l最新版本"+version+"已经发布了！快去更新吧"));
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l最新版本"+version+"已经发布了！快去更新吧 http://www.mcbbs.net/thread-666924-1-1.html"));
 				}
 			}
 		}.runTaskAsynchronously(plugin);

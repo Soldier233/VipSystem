@@ -1,7 +1,8 @@
 name: VipSystem
-version: 1.4
+version: 1.5
 author: Soldier
-depend: [Vault,PlaceholderAPI]
+depend: [Vault]
+softdepend: [PlaceholderAPI]
 main: me.zhanshi123.VipSystem.Main
 commands:
   vipsys:
