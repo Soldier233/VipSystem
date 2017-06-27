@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
+import me.zhanshi123.VipSystem.caches.MainCache;
+
 public class DataBase {
 	String type="SQLite",addr="jdbc:mysql://127.0.0.1:3306/vipsystem";
 	String pwd,user;
@@ -30,7 +32,7 @@ public class DataBase {
 	{
 		Utils.saveCache(conn, data);
 		long start=System.currentTimeMillis();
-		Cache ca=new Cache(conn);
+		MainCache ca=new MainCache(conn);
 		data=ca.getData();
 		long end=System.currentTimeMillis();
 		Long time=end-start;

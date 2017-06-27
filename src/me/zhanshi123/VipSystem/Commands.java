@@ -50,6 +50,7 @@ public class Commands implements CommandExecutor
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
 						{
 							Utils.addVip(name, group, day);
+							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 						}
 						else
@@ -60,6 +61,7 @@ public class Commands implements CommandExecutor
 					else
 					{
 						Utils.addVip(name, group, day);
+						Main.getPlaceholderCache().flushData(name);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 					}
 				}

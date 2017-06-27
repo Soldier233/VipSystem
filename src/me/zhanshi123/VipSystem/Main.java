@@ -10,19 +10,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.zhanshi123.VipSystem.hook.Papi;
+import me.zhanshi123.VipSystem.caches.PlaceholderCache;
+import me.zhanshi123.VipSystem.hook.placeholders.Papi;
+import me.zhanshi123.VipSystem.hook.vault.VaultHook;
+import me.zhanshi123.VipSystem.listeners.PlayerListener;
 import me.zhanshi123.VipSystem.managers.ConfigManager;
+
 import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
 {
+	private static Main instance;
+	private static PlaceholderCache pc;
 	@SuppressWarnings("deprecation")
 	private double updateDetect()
 	{
@@ -39,6 +42,14 @@ public class Main extends JavaPlugin
 		}
 		return version;
 	}
+	public static Main getInstance()
+	{
+		return instance;
+	}
+	public static PlaceholderCache getPlaceholderCache()
+	{
+		return pc;
+	}
 	public static Permission getPermission()
 	{
 		return perm;
@@ -53,14 +64,6 @@ public class Main extends JavaPlugin
 	}
     private static Permission perm = null;
     Plugin plugin=this;
-    private boolean setupPermissions()
-    {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-        	perm = permissionProvider.getProvider();
-        }
-        return (perm != null);
-    }
     private static DataBase db=null;
     private static ConfigManager cm=null;
 	public void onDisable()
@@ -101,11 +104,9 @@ public class Main extends JavaPlugin
 	{
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载中..."));
 		long start=System.currentTimeMillis();
+		instance=this;
 		initConfig();
 		cm.setVersion(getDescription().getVersion());
-		setupPermissions();
-		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
-		RegisterTasks();
 		if(initDatabase())
 		{
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l数据库连接成功"));
@@ -116,6 +117,11 @@ public class Main extends JavaPlugin
 			setEnabled(false);
 			return;
 		}
+		pc=new PlaceholderCache();
+		perm = new VaultHook(instance).getPermission();
+		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
+		RegisterTasks();
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
 		Metrics metrics = new Metrics(this);
 		boolean b=false;
 		if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
@@ -129,7 +135,7 @@ public class Main extends JavaPlugin
 		long end=System.currentTimeMillis();
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载完成 用时"+(end-start)+"ms 作者QQ 1224954468 技术交流群563012939"));
 	}
-
+	
 	public void RegisterTasks()
 	{
 		new BukkitRunnable()
@@ -145,9 +151,13 @@ public class Main extends JavaPlugin
 				{
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l无法获取最新版本！"));;
 				}
-				else 
+				else if(version>Double.valueOf(cm.getVersion()))
 				{
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l最新版本"+version+"已经发布了！快去更新吧 http://www.mcbbs.net/thread-666924-1-1.html"));
+				}
+				else
+				{
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l版本获取异常！"));
 				}
 			}
 		}.runTaskAsynchronously(plugin);
@@ -162,8 +172,7 @@ public class Main extends JavaPlugin
 		{
 			public void run()
 			{
-				List<Player> players=(List<Player>) Bukkit.getOnlinePlayers();
-				for(Player x:players)
+				for(Player x:Bukkit.getOnlinePlayers())
 				{
 					String name=x.getName();
 					if(db.exists(name))
@@ -181,24 +190,5 @@ public class Main extends JavaPlugin
 				}
 			}
 		}.runTaskTimer(plugin, 20*60L, 20*60L);
-	}
-
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e)
-	{
-		Player x=e.getPlayer();
-		String name=x.getName();
-		if(db.exists(name))
-		{
-			if(!db.getGroup(name).equalsIgnoreCase(perm.getPrimaryGroup(x)))
-			{
-				perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
-				perm.playerAddGroup(x, db.getGroup(name));
-			}
-			if(db.isPassed(name))
-			{
-				Utils.removeVip(x);
-			}
-		}
 	}
 }
