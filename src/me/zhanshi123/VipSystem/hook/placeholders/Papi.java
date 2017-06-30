@@ -23,22 +23,22 @@ public class Papi extends EZPlaceholderHook
 	{
 		if(str.equalsIgnoreCase("leftdays"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(p.getName()))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(p.getName()).getLeftDays());
+			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLeftDays());
 			else
 				return "0";
 		}
 		else if(str.equalsIgnoreCase("group"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(p.getName()))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(p.getName()).getVipGroup());
+			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getVipGroup());
 			else
 				return null;
 		}
 		else if(str.equalsIgnoreCase("lastgroup"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(p.getName()))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(p.getName()).getLastGroup());
+			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLastGroup());
 			else
 				return null;
 		}

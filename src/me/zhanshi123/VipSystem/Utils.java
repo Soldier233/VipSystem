@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,9 +30,17 @@ public class Utils {
 		long days=(passed.getTime()-new Date().getTime())/(1000*3600*24);
 		return days;
 	}
-	public static void addVip(String name,String group,String day)
+	public static void addVip(String name,String group,String day,boolean UUIDMODE)
 	{
-		Player p=Bukkit.getPlayer(name);
+		Player p;
+		if(UUIDMODE)
+		{
+			p=Bukkit.getPlayer(UUID.fromString(name));
+		}
+		else
+		{
+			p=Bukkit.getPlayer(name);
+		}
 		String last=Main.getPermission().getPrimaryGroup(p);
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
 		Main.getPermission().playerAddGroup(p, group);
@@ -39,13 +48,14 @@ public class Utils {
 	}
 	public static void removeVip(Player p)
 	{
-		Main.getPermission().playerRemoveGroup(p, Main.getDataBase().getGroup(p.getName()));
+		Main.getPermission().playerRemoveGroup(p, Main.getDataBase().getGroup(Utils.getPlayerName(p)));
 		if(Main.getConfigManager().getDefault().equalsIgnoreCase("#last"))
-			Main.getPermission().playerAddGroup(p, Main.getDataBase().getLastGroup(p.getName()));
+			Main.getPermission().playerAddGroup(p, Main.getDataBase().getLastGroup(Utils.getPlayerName(p)));
 		else
 			Main.getPermission().playerAddGroup(p, Main.getConfigManager().getDefault());
-		Main.getDataBase().removeVip(p.getName());
+		Main.getDataBase().removeVip(Utils.getPlayerName(p));
 	}
+	
 	public static void removeFromDatabase(Connection conn,String name)
 	{
 		try 
@@ -114,5 +124,22 @@ public class Utils {
 		
 		long stoptime=System.currentTimeMillis();
 		return stoptime-starttime;
+	}
+	
+	public static String getPlayerName(Player p)
+	{
+		if(Main.getConfigManager().getUUIDMode())
+		{
+			return p.getUniqueId().toString();
+		}
+		else
+		{
+			return p.getName();
+		}
+	}
+	
+	public static Player getPlayer(String uuid)
+	{
+		return Bukkit.getPlayer(UUID.fromString(uuid));
 	}
 }

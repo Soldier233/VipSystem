@@ -106,6 +106,7 @@ public class Main extends JavaPlugin
 		long start=System.currentTimeMillis();
 		instance=this;
 		initConfig();
+		double version=Double.valueOf(cm.getVersion());
 		cm.setVersion(getDescription().getVersion());
 		if(initDatabase())
 		{
@@ -116,6 +117,10 @@ public class Main extends JavaPlugin
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l插件发生致命错误，停止加载!"));
 			setEnabled(false);
 			return;
+		}
+		if(version<1.7D)
+		{
+			db.executeUpdate("ALTER TABLE `players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
 		}
 		pc=new PlaceholderCache();
 		perm = new VaultHook(instance).getPermission();

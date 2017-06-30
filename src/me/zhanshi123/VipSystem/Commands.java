@@ -43,13 +43,23 @@ public class Commands implements CommandExecutor
 				if(args[0].equalsIgnoreCase("give")&&sender.isOp())
 				{
 					String name=args[1];
+					Player p=Bukkit.getPlayer(name);
+					if(p!=null)
+					{
+						name=Utils.getPlayerName(p);
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						return true;
+					}
 					String group=args[2];
 					String day=args[3];
 					if(Main.getDataBase().exists(name))
 					{
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
 						{
-							Utils.addVip(name, group, day);
+							Utils.addVip(name, group, day,Main.getConfigManager().getUUIDMode());
 							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 						}
@@ -60,7 +70,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						Utils.addVip(name, group, day);
+						Utils.addVip(name, group, day,Main.getConfigManager().getUUIDMode());
 						Main.getPlaceholderCache().flushData(name);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 					}
@@ -68,9 +78,19 @@ public class Commands implements CommandExecutor
 				else if(args[0].equalsIgnoreCase("remove")&&sender.isOp())
 				{
 					String name=args[1];
+					Player p=Bukkit.getPlayer(name);
+					if(p!=null)
+					{
+						name=Utils.getPlayerName(p);
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						return true;
+					}
 					if(Main.getDataBase().getExpired(name)==0)
 					{
-						Utils.removeVip(Bukkit.getPlayer(name));
+						Utils.removeVip(p);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功移除指定玩家的VIP"));	
 					}
 					else
@@ -81,6 +101,16 @@ public class Commands implements CommandExecutor
 				else if(args[0].equalsIgnoreCase("look")&&sender.isOp())
 				{
 					String name=args[1];
+					Player p=Bukkit.getPlayer(name);
+					if(p!=null)
+					{
+						name=Utils.getPlayerName(p);
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						return true;
+					}
 					String group=null;
 					long days=0;
 					if(Main.getDataBase().getExpired(name)==0)
@@ -98,11 +128,11 @@ public class Commands implements CommandExecutor
 							e.printStackTrace();
 						}	
 						group=Main.getDataBase().getGroup(name);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+name+"是"+group+"，剩余时间"+String.valueOf(days)+"天"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+p.getName()+"是"+group+"，剩余时间"+String.valueOf(days)+"天"));	
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+name+"没有VIP"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+p.getName()+"没有VIP"));	
 					}
 				}
 				else if(args[0].equalsIgnoreCase("save")&&sender.isOp())
@@ -115,7 +145,7 @@ public class Commands implements CommandExecutor
 					if(sender instanceof Player)
 					{
 						Player p=(Player) sender;
-						String name=p.getName();
+						String name=Utils.getPlayerName(p);
 						long days=0;
 						if(Main.getDataBase().getExpired(name)==0)
 						{

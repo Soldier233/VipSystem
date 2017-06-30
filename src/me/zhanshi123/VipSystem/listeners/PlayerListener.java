@@ -14,7 +14,8 @@ public class PlayerListener implements Listener
 	public void onJoin(PlayerJoinEvent e)
 	{
 		Player x=e.getPlayer();
-		String name=x.getName();
+		String name=Utils.getPlayerName(x);
+		
 		if(Main.getDataBase().exists(name))
 		{
 			if(!Main.getDataBase().getGroup(name).equalsIgnoreCase(Main.getPermission().getPrimaryGroup(x)))

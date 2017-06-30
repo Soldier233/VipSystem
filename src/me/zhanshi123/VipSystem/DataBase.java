@@ -49,6 +49,19 @@ public class DataBase {
 		this.user=user;
 		this.pwd=pwd;
 	}
+	public void executeUpdate(String sql)
+	{
+		try {
+			statement=conn.createStatement();
+			statement.executeUpdate(sql);
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	public boolean init()
 	{
 		try {
@@ -62,7 +75,7 @@ public class DataBase {
 				conn = DriverManager.getConnection(addr,user,pwd);
 			}
 			statement = conn.createStatement();
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(10) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
 			return true;
