@@ -19,14 +19,14 @@ public class Commands implements CommandExecutor
 	{
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&l==========&a&lVipSystem&6&l=========="));
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys viptime &9&l查询剩余VIP天数"));
-		//sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys key <CDK> &9&l使用cdk"));
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys key <CDK> &9&l使用cdk"));
 		if(sender.isOp())
 		{
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys look <玩家名> &9&l查询指定玩家VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys give <玩家名> <VIP组> <天数> &9&l给目标玩家指定天数的VIP"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys remove <玩家名> &9&l移除目标玩家的VIP"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys createkey <数量> <VIP组> <天数> &9&l创建cdk"));
 			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys save &9&l立即保存缓存(默认5分钟一次)"));
-			//sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys createkey <数量> <VIP组> <天数> &9&l使用cdk"));
 		}	
 	}
 
@@ -172,8 +172,55 @@ public class Commands implements CommandExecutor
 				}
 				else if(args[0].equalsIgnoreCase("key"))
 				{
+					Player p;
+					if(sender instanceof Player)
+					{
+						p=(Player) sender;
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l后台不能运行该命令"));
+						return true;
+					}
+					String name=Utils.getPlayerName(p);
 					String cdk=args[1];
 					
+					if(!Main.getKeyManager().exists(cdk))
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l该激活码不存在!"));
+					}
+					else
+					{
+						Key key=Main.getKeyManager().getKey(cdk);
+						if(Main.getDataBase().exists(name))
+						{
+							if(Main.getDataBase().getGroup(name).equals(key.getGroup()))
+							{
+								Utils.addVip(name, key.getGroup(), key.getDays(), Main.getConfigManager().getUUIDMode());
+								Main.getPlaceholderCache().flushData(name);
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
+							}
+							else
+							{
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l对不起，你还有其他VIP，无法使用!"));
+							}
+						}
+						else
+						{
+							Utils.addVip(name, key.getGroup(), key.getDays(), Main.getConfigManager().getUUIDMode());
+							Main.getPlaceholderCache().flushData(name);
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
+						}
+						
+					}
+				}
+				else if(args[0].equalsIgnoreCase("createkey")&&sender.isOp())
+				{
+					int amount=Integer.valueOf(args[1]);
+					String group=args[2];
+					String days=args[3];
+					Main.getKeyManager().create(amount, group, days);
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l创建线程已发起!完成后会在后台提示，查询创建的key请到后台查看数据库"));
 				}
 			}
 		}

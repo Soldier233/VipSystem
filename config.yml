@@ -1,9 +1,11 @@
-Version: 1.7
+Version: 1.8
 Config:
   Default: 'default'
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
   UUID-Mode: false
+  #是否开启UUID模式
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
+  #生成的激活码中包含的字符
   DataBase:
     Type: sqlite
     #填写sqlite或mysql

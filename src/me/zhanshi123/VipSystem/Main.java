@@ -19,7 +19,7 @@ import me.zhanshi123.VipSystem.hook.placeholders.Papi;
 import me.zhanshi123.VipSystem.hook.vault.VaultHook;
 import me.zhanshi123.VipSystem.listeners.PlayerListener;
 import me.zhanshi123.VipSystem.managers.ConfigManager;
-
+import me.zhanshi123.VipSystem.managers.KeyManager;
 import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
@@ -42,6 +42,10 @@ public class Main extends JavaPlugin
 		}
 		return version;
 	}
+	public static KeyManager getKeyManager()
+	{
+		return km;
+	}
 	public static Main getInstance()
 	{
 		return instance;
@@ -63,6 +67,7 @@ public class Main extends JavaPlugin
 		return cm;
 	}
     private static Permission perm = null;
+    private static KeyManager km = null;
     Plugin plugin=this;
     private static DataBase db=null;
     private static ConfigManager cm=null;
@@ -122,10 +127,15 @@ public class Main extends JavaPlugin
 		{
 			db.executeUpdate("ALTER TABLE `players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
 		}
+		if(version<1.8D)
+		{
+			db.executeUpdate("ALTER TABLE `vipkeys` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `key`;");
+		}
 		pc=new PlaceholderCache();
 		perm = new VaultHook(instance).getPermission();
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
 		RegisterTasks();
+		km=new KeyManager();
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
 		Metrics metrics = new Metrics(this);
 		boolean b=false;
@@ -179,7 +189,7 @@ public class Main extends JavaPlugin
 			{
 				for(Player x:Bukkit.getOnlinePlayers())
 				{
-					String name=x.getName();
+					String name=Utils.getPlayerName(x);
 					if(db.exists(name))
 					{
 						if(!db.getGroup(name).equalsIgnoreCase(perm.getPrimaryGroup(x)))

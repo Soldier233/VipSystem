@@ -76,7 +76,7 @@ public class DataBase {
 			}
 			statement = conn.createStatement();
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
 			return true;
 		} catch (ClassNotFoundException | SQLException e) {
@@ -192,24 +192,6 @@ public class DataBase {
 		data.remove(name);
 		Utils.removeFromDatabase(conn, name);
 	}
-	public boolean hasKey(String key)
-	{
-		boolean result=false;
-		
-		return result;
-	}
-	public void insertKey(String key,String group,String day)
-	{
-		try {
-			ResultSet rs=statement.executeQuery("select * from vipkeys where key = '"+key+"'");
-			if(!rs.next())
-			{
-				statement.executeUpdate("");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	public void setGroup(String name,String group)
 	{
 		Info info=data.get(name);
@@ -251,5 +233,73 @@ public class DataBase {
 		{
 			return false;
 		}
+	}
+	/*
+	 * Key²¿·Ö
+	 */
+	public boolean checkKey(String key)
+	{
+		try {
+			statement=conn.createStatement();
+			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			if(rs.next())
+			{
+				statement.close();
+				return true; 
+			}
+			else
+			{
+				statement.close();
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	public void removeKey(String key)
+	{
+		try {
+			statement=conn.createStatement();
+			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			if(rs.next())
+			{
+				statement.executeUpdate("delete from vipkeys where `key` = '"+key+"';");
+			}
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void insertKey(String key,String group,String day)
+	{
+		try {
+			statement=conn.createStatement();
+			statement.executeUpdate("insert into vipkeys values ('"+key+"','"+group+"','"+day+"');");
+			statement.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public Key getKey(String key)
+	{
+		Key k=null;
+		try
+		{
+			statement=conn.createStatement();
+			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			if(rs.next())
+			{
+				String group=rs.getString("vipg");
+				String days=rs.getString("day");
+				k=new Key(key,group,days);
+			}
+			statement.close();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return k;
 	}
 }

@@ -1,42 +1,35 @@
 package me.zhanshi123.VipSystem;
 
-import java.util.Random;
-
-import org.bukkit.scheduler.BukkitRunnable;
-
-import me.zhanshi123.VipSystem.managers.ConfigManager;
-
 public class Key {
-	DataBase db=null;
-	ConfigManager cm=null;
-	public Key(DataBase db,ConfigManager cm)
+	String key,group,days;
+	public Key(String key,String group,String days)
 	{
-		this.db=db;
-		this.cm=cm;
+		this.key=key;
+		this.group=group;
+		this.days=days;
 	}
-	public boolean create(int number,String group,String day)
+	public String getKey()
 	{
-		boolean success=false;
-		String list=cm.getKeyWords();
-		new BukkitRunnable()
-		{
-			public void run()
-			{
-				for(int i=0;i<number;i++)
-				{
-					StringBuilder sb=new StringBuilder();
-					for(int j=0;j<12;j++)
-					{
-						Random r=new Random(System.currentTimeMillis());
-						char word=list.charAt(r.nextInt(list.length()-1));
-						sb.append(word);
-					}
-					String key=sb.toString();
-					db.insertKey(key, group, day);
-				}
-			}
-		}.runTask(new Main());
-
-		return success;
+		return key;
+	}
+	public String getGroup()
+	{
+		return group;
+	}
+	public String getDays()
+	{
+		return days;
+	}
+	public void setKey(String key)
+	{
+		this.key=key;
+	}
+	public void setGroup(String group)
+	{
+		this.group=group;
+	}
+	public void setDays(String days)
+	{
+		this.days=days;
 	}
 }
