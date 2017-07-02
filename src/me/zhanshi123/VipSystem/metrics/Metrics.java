@@ -1,4 +1,4 @@
-package me.zhanshi123.VipSystem;
+package me.zhanshi123.VipSystem.metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

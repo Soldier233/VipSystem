@@ -20,6 +20,7 @@ import me.zhanshi123.VipSystem.hook.vault.VaultHook;
 import me.zhanshi123.VipSystem.listeners.PlayerListener;
 import me.zhanshi123.VipSystem.managers.ConfigManager;
 import me.zhanshi123.VipSystem.managers.KeyManager;
+import me.zhanshi123.VipSystem.metrics.Metrics;
 import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin
