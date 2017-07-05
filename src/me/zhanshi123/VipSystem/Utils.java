@@ -44,6 +44,7 @@ public class Utils {
 		String last=Main.getPermission().getPrimaryGroup(p);
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
 		Main.getPermission().playerAddGroup(p, group);
+		Main.getPlaceholderCache().flushData(name);
 		Main.getDataBase().addVip(name, group+"#"+last, day);
 	}
 	public static void removeVip(Player p)
@@ -53,6 +54,7 @@ public class Utils {
 			Main.getPermission().playerAddGroup(p, Main.getDataBase().getLastGroup(Utils.getPlayerName(p)));
 		else
 			Main.getPermission().playerAddGroup(p, Main.getConfigManager().getDefault());
+		Main.getPlaceholderCache().flushData(Utils.getPlayerName(p));
 		Main.getDataBase().removeVip(Utils.getPlayerName(p));
 	}
 	

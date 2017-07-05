@@ -59,8 +59,7 @@ public class Commands implements CommandExecutor
 					{
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
 						{
-							int all=Integer.valueOf(Main.getDataBase().getDate(name).get(3))+Integer.valueOf(day);
-							Utils.addVip(name, group, String.valueOf(all),Main.getConfigManager().getUUIDMode());
+							Utils.addVip(name, group, String.valueOf(day),Main.getConfigManager().getUUIDMode());
 							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 						}
@@ -72,7 +71,6 @@ public class Commands implements CommandExecutor
 					else
 					{
 						Utils.addVip(name, group, day,Main.getConfigManager().getUUIDMode());
-						Main.getPlaceholderCache().flushData(name);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
 					}
 				}
@@ -197,9 +195,8 @@ public class Commands implements CommandExecutor
 						{
 							if(Main.getDataBase().getGroup(name).equals(key.getGroup()))
 							{
-								int all=Integer.valueOf(Main.getDataBase().getDate(name).get(3))+Integer.valueOf(key.getDays());
-								Utils.addVip(name, key.getGroup(), String.valueOf(all), Main.getConfigManager().getUUIDMode());
-								Main.getPlaceholderCache().flushData(name);
+								Utils.addVip(name, key.getGroup(), String.valueOf(key.getDays()), Main.getConfigManager().getUUIDMode());
+								Main.getKeyManager().removeKey(key.getKey());
 								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
 							}
 							else
@@ -210,10 +207,9 @@ public class Commands implements CommandExecutor
 						else
 						{
 							Utils.addVip(name, key.getGroup(), key.getDays(), Main.getConfigManager().getUUIDMode());
-							Main.getPlaceholderCache().flushData(name);
+							Main.getKeyManager().removeKey(key.getKey());
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
 						}
-						
 					}
 				}
 				else if(args[0].equalsIgnoreCase("createkey")&&sender.isOp())
