@@ -2,8 +2,8 @@ package me.zhanshi123.VipSystem.hook.placeholders;
 
 public class PlaceholderInfo {
 	String vipGroup,lastGroup;
-	long leftDays;
-	public PlaceholderInfo(String vipGroup,String lastGroup,long leftDays)
+	float leftDays;
+	public PlaceholderInfo(String vipGroup,String lastGroup,float leftDays)
 	{
 		this.vipGroup=vipGroup;
 		this.lastGroup=lastGroup;
@@ -17,7 +17,7 @@ public class PlaceholderInfo {
 	{
 		this.lastGroup=lastGroup;
 	}
-	public void setleftDays(long leftDays)
+	public void setleftDays(float leftDays)
 	{
 		this.leftDays=leftDays;
 	}
@@ -29,7 +29,7 @@ public class PlaceholderInfo {
 	{
 		return lastGroup;
 	}
-	public long getLeftDays()
+	public float getLeftDays()
 	{
 		return leftDays;
 	}

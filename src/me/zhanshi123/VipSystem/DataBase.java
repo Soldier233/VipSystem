@@ -271,14 +271,18 @@ public class DataBase {
 			e.printStackTrace();
 		}
 	}
-	public void insertKey(String key,String group,String day)
+	public void insertKey(List<String> key,String group,String day)
 	{
 		try {
 			statement=conn.createStatement();
-			statement.executeUpdate("insert into vipkeys values ('"+key+"','"+group+"','"+day+"');");
+			for(String x:key)
+			{
+				statement.executeUpdate("insert into vipkeys values ('"+x+"','"+group+"','"+day+"');");
+			}
 			statement.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			if(!e.getMessage().startsWith("Duplicate entry"))
+				e.printStackTrace();
 		}
 	}
 	public Key getKey(String key)
@@ -301,5 +305,24 @@ public class DataBase {
 			e.printStackTrace();
 		}
 		return k;
+	}
+	public List<String> getKeys(String group)
+	{
+		List<String> keys=new ArrayList<String>();
+		try
+		{
+			statement=conn.createStatement();
+			ResultSet rs=statement.executeQuery("select * from vipkeys where `vipg` = '"+group+"';");
+			while(rs.next())
+			{
+				keys.add(rs.getString("key"));
+			}
+			statement.close();
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return keys;
 	}
 }

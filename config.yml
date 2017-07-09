@@ -1,4 +1,4 @@
-Version: 1.10
+Version: 1.11
 Config:
   Default: 'default'
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last

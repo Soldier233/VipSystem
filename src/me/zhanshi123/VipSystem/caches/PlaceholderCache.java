@@ -27,7 +27,7 @@ public class PlaceholderCache extends Cache{
 		String month=date.get(1);
 		String day=date.get(2);
 		String left=date.get(3);
-		long days=0;
+		float days=0;
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			Date now=format.parse(year+"-"+month+"-"+day);

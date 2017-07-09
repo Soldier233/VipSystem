@@ -21,14 +21,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class Utils {
-	public static long calculateLeftDays(Date now,String left)
+	public static float calculateLeftDays(Date now,String left)
 	{
 		GregorianCalendar gc=new GregorianCalendar(); 
 		gc.setTime(now);
 		gc.add(5,Integer.valueOf(left));
 		Date passed=gc.getTime();
-		long days=(passed.getTime()-new Date().getTime())/(1000*3600*24);
-		return days;
+		float days=Float.valueOf(passed.getTime()-new Date().getTime())/Float.valueOf(1000*3600*24);
+		float day=(float)(Math.round(days*100))/100;
+		return day;
 	}
 	public static void addVip(String name,String group,String day,boolean UUIDMODE)
 	{

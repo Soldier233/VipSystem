@@ -1,5 +1,8 @@
 package me.zhanshi123.VipSystem;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,15 +21,16 @@ public class Commands implements CommandExecutor
 	public void sendHelp(CommandSender sender)
 	{
 		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&l==========&a&lVipSystem&6&l=========="));
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys viptime &9&l查询剩余VIP天数"));
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys key <CDK> &9&l使用cdk"));
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys viptime &9查询剩余VIP天数"));
+		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys key <CDK> &9使用cdk"));
 		if(sender.isOp())
 		{
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys look <玩家名> &9&l查询指定玩家VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys give <玩家名> <VIP组> <天数> &9&l给目标玩家指定天数的VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys remove <玩家名> &9&l移除目标玩家的VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys createkey <数量> <VIP组> <天数> &9&l创建cdk"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l- /vipsys save &9&l立即保存缓存(默认5分钟一次)"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys look <玩家名> &9查询指定玩家VIP"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys give <玩家名> <VIP组> <天数> &9给目标玩家指定天数的VIP"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys remove <玩家名> &9移除目标玩家的VIP"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys createkey <数量> <VIP组> <天数> &9创建cdk"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys export <VIP组> &9导出某个组的所有未使用的cdk"));
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys save &9立即保存缓存(默认5分钟一次)"));
 		}	
 	}
 
@@ -111,7 +115,7 @@ public class Commands implements CommandExecutor
 						return true;
 					}
 					String group=null;
-					long days=0;
+					float days=0;
 					if(Main.getDataBase().getExpired(name)==0)
 					{
 						List<String> date=Main.getDataBase().getDate(name);
@@ -145,7 +149,7 @@ public class Commands implements CommandExecutor
 					{
 						Player p=(Player) sender;
 						String name=Utils.getPlayerName(p);
-						long days=0;
+						float days=0;
 						if(Main.getDataBase().getExpired(name)==0)
 						{
 							List<String> date=Main.getDataBase().getDate(name);
@@ -218,7 +222,30 @@ public class Commands implements CommandExecutor
 					String group=args[2];
 					String days=args[3];
 					Main.getKeyManager().create(amount, group, days);
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l创建线程已发起!完成后会在后台提示，查询创建的key请到后台查看数据库"));
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l创建线程已发起!完成后会在后台提示"));
+				}
+				else if(args[0].equalsIgnoreCase("export")&&sender.isOp())
+				{
+					String group=args[1];
+					long start=System.currentTimeMillis();
+					List<String> list=Main.getDataBase().getKeys(group);
+					File f=new File(Main.getInstance().getDataFolder(),"Keys-"+group+"-"+System.currentTimeMillis()+".txt");
+					try
+					{
+						BufferedWriter bw=new BufferedWriter(new FileWriter(f));
+						for(String x:list)
+						{
+							bw.write(x);
+							bw.newLine();
+						}
+						bw.close();
+						long end=System.currentTimeMillis();
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a导出成功，用时"+(end-start)+"ms。见"+f.getAbsolutePath()));
+					}
+					catch(Exception e)
+					{
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c导出失败!原因:"+e.getMessage()));
+					}
 				}
 			}
 		}

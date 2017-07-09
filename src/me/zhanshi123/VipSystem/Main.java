@@ -116,6 +116,7 @@ public class Main extends JavaPlugin
 		initConfig();
 		double version=Double.valueOf(cm.getVersion());
 		cm.setVersion(getDescription().getVersion());
+		saveConfig();
 		if(initDatabase())
 		{
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l数据库连接成功"));
@@ -126,11 +127,15 @@ public class Main extends JavaPlugin
 			setEnabled(false);
 			return;
 		}
-		if(version<1.7D)
+		String strver=String.valueOf(version);
+		String[] array=strver.split("\\.");
+		int firstVersion=Integer.valueOf(array[0]);
+		int secondVersion=Integer.valueOf(array[1]);
+		if(secondVersion<7)
 		{
 			db.executeUpdate("ALTER TABLE `players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
 		}
-		if(version<1.8D)
+		if(secondVersion<8)
 		{
 			db.executeUpdate("ALTER TABLE `vipkeys` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `key`;");
 		}
@@ -161,6 +166,12 @@ public class Main extends JavaPlugin
 			public void run()
 			{
 				double version=updateDetect();
+				String strver=String.valueOf(version);
+				String[] array=strver.split("\\.");
+				int secondVersion=Integer.valueOf(array[1]);
+				String strver1=String.valueOf(cm.getVersion());
+				String[] array1=strver1.split("\\.");
+				int secondVersion1=Integer.valueOf(array1[1]);
 				if(version==Double.valueOf(cm.getVersion()))
 				{
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l你目前使用的是最新版的插件哦"));
@@ -169,7 +180,7 @@ public class Main extends JavaPlugin
 				{
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l无法获取最新版本！"));;
 				}
-				else if(version>Double.valueOf(cm.getVersion()))
+				else if(secondVersion>secondVersion1)
 				{
 					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l最新版本"+version+"已经发布了！快去更新吧 http://www.mcbbs.net/thread-666924-1-1.html"));
 				}
