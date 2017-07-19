@@ -16,10 +16,10 @@ public class KeyManager {
 	{
 		
 	}
-	public void create(int number,String group,String day)
+	public void create(final int number,final String group,final String day)
 	{
-		String list=Main.getConfigManager().getKeyWords();
-		List<String> keys=new ArrayList<String>();
+		final String list=Main.getConfigManager().getKeyWords();
+		final List<String> keys=new ArrayList<String>();
 		new BukkitRunnable()
 		{
 			public void run()

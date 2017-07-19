@@ -19,12 +19,14 @@ public class ConfigManager {
 		this.p=p;
 		config=p.getConfig();
 	}
-	public boolean getUUIDMode()
+	public String getDisplayString()
 	{
-		
+		return config.getString("Config.DisplayString");
+	}
+	public boolean getUUIDMode()
+	{	
 		return config.getBoolean("Config.UUID-Mode",false);
 	}
-	
 	public String getVersion()
 	{
 		return config.getString("Version");

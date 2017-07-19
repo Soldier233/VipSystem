@@ -33,14 +33,14 @@ public class Papi extends EZPlaceholderHook
 			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
 				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getVipGroup());
 			else
-				return null;
+				return Main.getConfigManager().getDisplayString();
 		}
 		else if(str.equalsIgnoreCase("lastgroup"))
 		{
 			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
 				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLastGroup());
 			else
-				return null;
+				return Main.getConfigManager().getDisplayString();
 		}
 		else
 		{

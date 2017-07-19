@@ -61,7 +61,26 @@ public class MainCache extends Cache
 		{
 			e.printStackTrace();
 		}
-		
 		return data;
+	}
+	public Info getData(String name)
+	{
+		try {
+			st=conn.createStatement();
+			ResultSet rs=st.executeQuery("SELECT * from `players` where `player` = '"+name+"'");
+			if(rs.next())
+			{
+				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
+				return info;
+			}
+			else
+			{
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

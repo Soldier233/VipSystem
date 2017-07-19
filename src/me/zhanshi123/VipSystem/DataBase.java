@@ -27,13 +27,16 @@ public class DataBase {
 	Statement statement=null;
 	PreparedStatement pst=null;
 	Plugin p=null;
-	HashMap<String,Info> data=new HashMap<String,Info>();
+	public HashMap<String,Info> data=new HashMap<String,Info>();
+	MainCache ca;
+	public MainCache getMainCache()
+	{
+		return ca; 
+	}
 	public void getCache()
 	{
-		Utils.saveCache(conn, data);
 		long start=System.currentTimeMillis();
-		MainCache ca=new MainCache(conn);
-		data=ca.getData();
+		Utils.saveCache(conn, data);
 		long end=System.currentTimeMillis();
 		Long time=end-start;
 		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
@@ -61,7 +64,6 @@ public class DataBase {
 		
 		
 	}
-	
 	public boolean init()
 	{
 		try {
@@ -78,6 +80,7 @@ public class DataBase {
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
+			ca=new MainCache(conn);
 			return true;
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();

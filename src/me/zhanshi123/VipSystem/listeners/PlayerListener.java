@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import me.zhanshi123.VipSystem.Info;
 import me.zhanshi123.VipSystem.Main;
 import me.zhanshi123.VipSystem.Utils;
 
@@ -15,7 +16,15 @@ public class PlayerListener implements Listener
 	{
 		Player x=e.getPlayer();
 		String name=Utils.getPlayerName(x);
-		
+		Info info=Main.getDataBase().getMainCache().getData(name);
+		if(info==null)
+		{
+			return;
+		}
+		else
+		{
+			Main.getDataBase().data.put(name, info);
+		}
 		if(Main.getDataBase().exists(name))
 		{
 			if(!Main.getDataBase().getGroup(name).equalsIgnoreCase(Main.getPermission().getPrimaryGroup(x)))
