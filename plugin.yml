@@ -1,5 +1,5 @@
 name: VipSystem
-version: 1.12
+version: 1.13
 author: Soldier
 depend: [Vault]
 softdepend: [PlaceholderAPI]

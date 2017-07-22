@@ -7,8 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -21,6 +25,35 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class Utils {
+	public static Collection<Player> getOnlinePlayers()
+	{
+		Collection<Player> players=null;
+		try {
+			Class<?> clazz=Class.forName("org.bukkit.Bukkit");
+			Method method=clazz.getMethod("getOnlinePlayers");
+			if(method.getReturnType().equals(Collection.class))
+			{
+				players=(Collection<Player>) method.invoke(Bukkit.getServer());
+			}
+			else
+			{
+				players=Arrays.asList((Player[]) method.invoke(Bukkit.getServer()));
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return players;
+	}
 	public static float calculateLeftDays(Date now,String left)
 	{
 		GregorianCalendar gc=new GregorianCalendar(); 

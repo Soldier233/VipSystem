@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
 import me.zhanshi123.VipSystem.caches.MainCache;
+import me.zhanshi123.VipSystem.managers.MessageManager;
 
 public class DataBase {
 	String type="SQLite",addr="jdbc:mysql://127.0.0.1:3306/vipsystem";
@@ -39,7 +40,7 @@ public class DataBase {
 		Utils.saveCache(conn, data);
 		long end=System.currentTimeMillis();
 		Long time=end-start;
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "[VipSystem缓存系统] &a&l对缓存数据进行保存完成，花费了&c"+String.valueOf(time)+"&a&lms"));
+		Bukkit.getConsoleSender().sendMessage(MessageManager.gCacheSaved.replace("%time%", String.valueOf(time)));
 	}
 	public DataBase(Plugin p,String type)
 	{

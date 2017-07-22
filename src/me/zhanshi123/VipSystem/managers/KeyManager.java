@@ -39,7 +39,7 @@ public class KeyManager {
 				}
 				Main.getDataBase().insertKey(keys, group, day);
 				long end=System.currentTimeMillis();
-				Bukkit.getConsoleSender().sendMessage("§6§lVipSystem §7>>> §a创建完成!如果有报错请仔细查阅问题!用时"+(end-start)+"ms");
+				Bukkit.getConsoleSender().sendMessage(MessageManager.CodeCreated.replace("%time%", String.valueOf(end-start)));
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 	}

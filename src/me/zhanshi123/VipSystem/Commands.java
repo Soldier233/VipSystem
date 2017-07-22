@@ -16,21 +16,22 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.zhanshi123.VipSystem.managers.MessageManager;
+
 public class Commands implements CommandExecutor
 {
 	public void sendHelp(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&l==========&a&lVipSystem&6&l=========="));
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys viptime &9查询剩余VIP天数"));
-		sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys key <CDK> &9使用cdk"));
+		for(String x:MessageManager.PlayerHelp)
+		{
+			sender.sendMessage(x.replace('&', '§'));
+		}
 		if(sender.isOp())
 		{
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys look <玩家名> &9查询指定玩家VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys give <玩家名> <VIP组> <天数> &9给目标玩家指定天数的VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys remove <玩家名> &9移除目标玩家的VIP"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys createkey <数量> <VIP组> <天数> &9创建cdk"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys export <VIP组> &9导出某个组的所有未使用的cdk"));
-			sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&l- &b/vipsys save &9立即保存缓存(默认5分钟一次)"));
+			for(String x:MessageManager.AdminHelp)
+			{
+				sender.sendMessage(x.replace('&', '§'));
+			}
 		}	
 	}
 
@@ -54,7 +55,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						sender.sendMessage((MessageManager.prefix+MessageManager.PlayerNotFound).replace('&', '§'));
 						return true;
 					}
 					String group=args[2];
@@ -65,17 +66,17 @@ public class Commands implements CommandExecutor
 						{
 							Utils.addVip(name, group, String.valueOf(day),Main.getConfigManager().getUUIDMode());
 							Main.getPlaceholderCache().flushData(name);
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 						}
 						else
 						{
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l该玩家还有别的VIP，请先移除那个VIP再进行操作"));
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.AlreadyHaveVip));
 						}
 					}
 					else
 					{
 						Utils.addVip(name, group, day,Main.getConfigManager().getUUIDMode());
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功发送VIP到指定玩家"));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 					}
 				}
 				else if(args[0].equalsIgnoreCase("remove")&&sender.isOp())
@@ -88,17 +89,17 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.PlayerNotFound));
 						return true;
 					}
 					if(Main.getDataBase().getExpired(name)==0)
 					{
 						Utils.removeVip(p);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功移除指定玩家的VIP"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipRemoved));	
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l该玩家不是VIP"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.HaveNoVip));	
 					}
 				}
 				else if(args[0].equalsIgnoreCase("look")&&sender.isOp())
@@ -111,7 +112,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c玩家不在线!"));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.PlayerNotFound));
 						return true;
 					}
 					String group=null;
@@ -131,17 +132,18 @@ public class Commands implements CommandExecutor
 							e.printStackTrace();
 						}	
 						group=Main.getDataBase().getGroup(name);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+p.getName()+"是"+group+"，剩余时间"+String.valueOf(days)+"天"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
+						.replace("%group%", group).replace("left", String.valueOf(days))));	
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l"+p.getName()+"没有VIP"));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.HaveNoVip));	
 					}
 				}
 				else if(args[0].equalsIgnoreCase("save")&&sender.isOp())
 				{
 					Main.getDataBase().getCache();
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l保存完成!"));	
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CacheSaved));	
 				}
 				else if(args[0].equalsIgnoreCase("viptime"))
 				{
@@ -165,11 +167,12 @@ public class Commands implements CommandExecutor
 								e.printStackTrace();
 							}	
 							String group=Main.getDataBase().getGroup(name);
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l你是"+group+"，剩余时间"+String.valueOf(days)+"天"));	
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedBySelf)
+									.replace("%group%", group).replace("%left%", String.valueOf(days)));	
 						}
 						else
 						{
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l你没有VIP哦~"));	
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.YouHaveNoVip));	
 						}
 					}
 				}
@@ -182,7 +185,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l后台不能运行该命令"));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.ConsoleForbid));
 						return true;
 					}
 					String name=Utils.getPlayerName(p);
@@ -190,7 +193,7 @@ public class Commands implements CommandExecutor
 					
 					if(!Main.getKeyManager().exists(cdk))
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l该激活码不存在!"));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeNotFound));
 					}
 					else
 					{
@@ -201,18 +204,20 @@ public class Commands implements CommandExecutor
 							{
 								Utils.addVip(name, key.getGroup(), String.valueOf(key.getDays()), Main.getConfigManager().getUUIDMode());
 								Main.getKeyManager().removeKey(key.getKey());
-								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
+										.replace("%vip%", key.getGroup()).replace("left", key.getDays()));
 							}
 							else
 							{
-								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l对不起，你还有其他VIP，无法使用!"));
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.YouAlreadyHaveVip));
 							}
 						}
 						else
 						{
 							Utils.addVip(name, key.getGroup(), key.getDays(), Main.getConfigManager().getUUIDMode());
 							Main.getKeyManager().removeKey(key.getKey());
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l成功使用激活码，你获得了"+key.getGroup()+" "+key.getDays()+"天"));
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
+									.replace("%vip%", key.getGroup()).replace("left", key.getDays()));
 						}
 					}
 				}
@@ -222,7 +227,7 @@ public class Commands implements CommandExecutor
 					String group=args[2];
 					String days=args[3];
 					Main.getKeyManager().create(amount, group, days);
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l创建线程已发起!完成后会在后台提示"));
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.ThreadCreated));
 				}
 				else if(args[0].equalsIgnoreCase("export")&&sender.isOp())
 				{
@@ -240,11 +245,13 @@ public class Commands implements CommandExecutor
 						}
 						bw.close();
 						long end=System.currentTimeMillis();
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a导出成功，用时"+(end-start)+"ms。见"+f.getAbsolutePath()));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeExport)
+								.replace("%time%", String.valueOf(end-start)).replace("%path%", f.getAbsolutePath()));
 					}
 					catch(Exception e)
 					{
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c导出失败!原因:"+e.getMessage()));
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeExportFailed)
+								.replace("%reason%", e.getMessage()));
 					}
 				}
 			}

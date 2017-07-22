@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import me.zhanshi123.VipSystem.hook.vault.VaultHook;
 import me.zhanshi123.VipSystem.listeners.PlayerListener;
 import me.zhanshi123.VipSystem.managers.ConfigManager;
 import me.zhanshi123.VipSystem.managers.KeyManager;
+import me.zhanshi123.VipSystem.managers.MessageManager;
 import me.zhanshi123.VipSystem.metrics.Metrics;
 import net.milkbowl.vault.permission.Permission;
 
@@ -32,7 +34,7 @@ public class Main extends JavaPlugin
 	private double updateDetect()
 	{
 		double version=0.0D;
-		Bukkit.getConsoleSender().sendMessage("§6§lVipSystem §7>>> §a开始检查VipSystem的更新");
+		Bukkit.getConsoleSender().sendMessage(MessageManager.StartDetecting);
 		try {
 			URL url=new URL("http://www.mcmhsj.net/VipSystem/config.yml");
 			InputStream in=url.openStream();
@@ -96,7 +98,6 @@ public class Main extends JavaPlugin
 		String url="jdbc:mysql://"+info.get(0)+":"+info.get(1)+"/"+info.get(2);
 		if(type.equals("mysql"))
 		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l尝试向"+url+"建立MySQL连接，使用用户"+info.get(3)));
 			db.MySQL(url, info.get(3), info.get(4));
 		}
 		if(!db.init())
@@ -110,20 +111,20 @@ public class Main extends JavaPlugin
 	}
 	public void onEnable()
 	{
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载中..."));
 		long start=System.currentTimeMillis();
 		instance=this;
+		new MessageManager();
 		initConfig();
 		double version=Double.valueOf(cm.getVersion());
 		cm.setVersion(getDescription().getVersion());
 		saveConfig();
 		if(initDatabase())
 		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l数据库连接成功"));
+			
 		}
 		else
 		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l插件发生致命错误，停止加载!"));
+			Bukkit.getConsoleSender().sendMessage(MessageManager.DatabaseInitError);
 			setEnabled(false);
 			return;
 		}
@@ -151,12 +152,8 @@ public class Main extends JavaPlugin
 		{
 			b=new Papi(this).hook();
 		}
-		if(b==false)
-		{
-			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l未找到PlaceholderAPI或链接失败!"));
-		}
 		long end=System.currentTimeMillis();
-		Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l插件加载完成 用时"+(end-start)+"ms 作者QQ 1224954468 技术交流群563012939"));
+		Bukkit.getConsoleSender().sendMessage(MessageManager.LoadingComplete.replace("%time%", String.valueOf(end-start)));
 	}
 	
 	public void RegisterTasks()
@@ -174,19 +171,19 @@ public class Main extends JavaPlugin
 				int secondVersion1=Integer.valueOf(array1[1]);
 				if(version==Double.valueOf(cm.getVersion()))
 				{
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l你目前使用的是最新版的插件哦"));
+					Bukkit.getConsoleSender().sendMessage(MessageManager.LatestVersion);
 				}
 				else if(version==0.0D)
 				{
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &c&l无法获取最新版本！"));;
+					Bukkit.getConsoleSender().sendMessage(MessageManager.UpdateFailed);
 				}
 				else if(secondVersion>secondVersion1)
 				{
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l最新版本"+version+"已经发布了！快去更新吧 http://www.mcbbs.net/thread-666924-1-1.html"));
+					Bukkit.getConsoleSender().sendMessage(MessageManager.NewUpdate.replace("%version%", String.valueOf(version)));
 				}
 				else
 				{
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&6&lVipSystem &7>>> &a&l版本获取异常！"));
+					Bukkit.getConsoleSender().sendMessage(MessageManager.UpdateFailed);
 				}
 			}
 		}.runTaskAsynchronously(plugin);
@@ -201,7 +198,13 @@ public class Main extends JavaPlugin
 		{
 			public void run()
 			{
-				for(Player x:Bukkit.getOnlinePlayers())
+				Collection<Player> players=Utils.getOnlinePlayers();
+				if(players==null)
+				{
+					Bukkit.getConsoleSender().sendMessage(MessageManager.FailedToGetOnlinePlayers);
+					return;
+				}
+				for(Player x:players)
 				{
 					String name=Utils.getPlayerName(x);
 					if(db.exists(name))
