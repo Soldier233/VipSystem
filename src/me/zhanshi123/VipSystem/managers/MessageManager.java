@@ -89,7 +89,7 @@ public class MessageManager {
 		ConsoleForbid=config.getString("commands.error.ConsoleForbid");
 		VipGave=config.getString("commands.success.VipGave");
 		AlreadyHaveVip=config.getString("commands.error.AlreadyHaveVip");
-		HaveNoVip=config.getString("commands.success.VipGave");
+		HaveNoVip=config.getString("commands.success.HaveNoVip");
 		VipRemoved=config.getString("commands.success.VipRemoved");
 		QueriedByAdmin=config.getString("commands.success.QueriedByAdmin");
 		CacheSaved=config.getString("commands.success.CacheSaved");

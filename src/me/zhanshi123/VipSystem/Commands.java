@@ -22,15 +22,15 @@ public class Commands implements CommandExecutor
 {
 	public void sendHelp(CommandSender sender)
 	{
-		for(String x:MessageManager.PlayerHelp)
+		for(int i=0;i<MessageManager.PlayerHelp.size();i++)
 		{
-			sender.sendMessage(x.replace('&', '¡ì'));
+			sender.sendMessage(MessageManager.PlayerHelp.get(i).replace('&', '¡ì'));
 		}
 		if(sender.isOp())
 		{
-			for(String x:MessageManager.AdminHelp)
+			for(int i=0;i<MessageManager.AdminHelp.size();i++)
 			{
-				sender.sendMessage(x.replace('&', '¡ì'));
+				sender.sendMessage(MessageManager.AdminHelp.get(i).replace('&', '¡ì'));
 			}
 		}	
 	}
@@ -64,7 +64,7 @@ public class Commands implements CommandExecutor
 					{
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
 						{
-							Utils.addVip(name, group, String.valueOf(day),Main.getConfigManager().getUUIDMode());
+							Utils.addVip(name, group, String.valueOf(day));
 							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 						}
@@ -75,7 +75,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						Utils.addVip(name, group, day,Main.getConfigManager().getUUIDMode());
+						Utils.addVip(name, group, day);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 					}
 				}
@@ -133,7 +133,7 @@ public class Commands implements CommandExecutor
 						}	
 						group=Main.getDataBase().getGroup(name);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
-						.replace("%group%", group).replace("left", String.valueOf(days))));	
+						.replace("%group%", group).replace("%left%", String.valueOf(days))));	
 					}
 					else
 					{
@@ -202,10 +202,10 @@ public class Commands implements CommandExecutor
 						{
 							if(Main.getDataBase().getGroup(name).equals(key.getGroup()))
 							{
-								Utils.addVip(name, key.getGroup(), String.valueOf(key.getDays()), Main.getConfigManager().getUUIDMode());
+								Utils.addVip(name, key.getGroup(), String.valueOf(key.getDays()));
 								Main.getKeyManager().removeKey(key.getKey());
 								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
-										.replace("%vip%", key.getGroup()).replace("left", key.getDays()));
+										.replace("%vip%", key.getGroup()).replace("%left%", key.getDays()));
 							}
 							else
 							{
@@ -214,10 +214,10 @@ public class Commands implements CommandExecutor
 						}
 						else
 						{
-							Utils.addVip(name, key.getGroup(), key.getDays(), Main.getConfigManager().getUUIDMode());
+							Utils.addVip(name, key.getGroup(), key.getDays());
 							Main.getKeyManager().removeKey(key.getKey());
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
-									.replace("%vip%", key.getGroup()).replace("left", key.getDays()));
+									.replace("%vip%", key.getGroup()).replace("%left%", key.getDays()));
 						}
 					}
 				}

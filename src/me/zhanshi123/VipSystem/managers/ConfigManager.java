@@ -2,6 +2,7 @@ package me.zhanshi123.VipSystem.managers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,25 @@ import org.bukkit.plugin.Plugin;
 
 public class ConfigManager {
 	Plugin p=null;
-	private FileConfiguration config;
+	private FileConfiguration config= new YamlConfiguration();
+	File f;
 	public ConfigManager(Plugin p)
 	{
 		this.p=p;
-		config=p.getConfig();
+		f=new File(p.getDataFolder(),"config.yml");
+		try {
+			config.load(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void saveConfig()
+	{
+		try {
+			config.save(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getDisplayString()
 	{

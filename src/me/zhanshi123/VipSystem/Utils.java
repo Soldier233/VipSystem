@@ -39,17 +39,7 @@ public class Utils {
 			{
 				players=Arrays.asList((Player[]) method.invoke(Bukkit.getServer()));
 			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return players;
@@ -64,10 +54,10 @@ public class Utils {
 		float day=(float)(Math.round(days*100))/100;
 		return day;
 	}
-	public static void addVip(String name,String group,String day,boolean UUIDMODE)
+	public static void addVip(String name,String group,String day)
 	{
 		Player p;
-		if(UUIDMODE)
+		if(Main.getConfigManager().getUUIDMode())
 		{
 			p=Bukkit.getPlayer(UUID.fromString(name));
 		}

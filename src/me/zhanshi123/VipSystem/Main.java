@@ -2,6 +2,7 @@ package me.zhanshi123.VipSystem;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -87,7 +88,9 @@ public class Main extends JavaPlugin
 		if(!f.exists())
 		{
 			saveDefaultConfig();
+			System.out.println("configÒÑÉú³É");
 		}
+		
 		cm=new ConfigManager(plugin);
 	}
 	public boolean initDatabase()
@@ -113,11 +116,11 @@ public class Main extends JavaPlugin
 	{
 		long start=System.currentTimeMillis();
 		instance=this;
-		new MessageManager();
 		initConfig();
+		new MessageManager();
 		double version=Double.valueOf(cm.getVersion());
 		cm.setVersion(getDescription().getVersion());
-		saveConfig();
+		cm.saveConfig();
 		if(initDatabase())
 		{
 			
@@ -151,6 +154,33 @@ public class Main extends JavaPlugin
 		if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
 		{
 			b=new Papi(this).hook();
+		}
+		
+		for(Player x:Utils.getOnlinePlayers())
+		{
+			String name=Utils.getPlayerName(x);
+			Info info=Main.getDataBase().getMainCache().getData(name);
+			if(info==null)
+			{
+				return;
+			}
+			else
+			{
+				Main.getDataBase().data.put(name, info);
+			}
+			if(Main.getDataBase().exists(name))
+			{
+				if(!Main.getDataBase().getGroup(name).equalsIgnoreCase(Main.getPermission().getPrimaryGroup(x)))
+				{
+					Main.getPermission().playerRemoveGroup(x, Main.getPermission().getPrimaryGroup(x));
+					Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
+				}
+				if(Main.getDataBase().isPassed(name))
+				{
+					Utils.removeVip(x);
+				}
+			}
+			Main.getPlaceholderCache().flushData(name);
 		}
 		long end=System.currentTimeMillis();
 		Bukkit.getConsoleSender().sendMessage(MessageManager.LoadingComplete.replace("%time%", String.valueOf(end-start)));

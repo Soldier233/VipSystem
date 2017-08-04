@@ -1,24 +1,24 @@
-Version: 1.13
+Version: 1.14
 Config:
   Default: 'default'
-  #ÆÕÍ¨Íæ¼ÒµÄ×é£¬Èç¹ûÄãĞèÒªÔÚÍæ¼Òvipµ½ÆÚºó·µ»ØÃ»ÓĞvipÊ±µÄ×é£¬ÇëÌîĞ´ #last
+  #æ™®é€šç©å®¶çš„ç»„ï¼Œå¦‚æœä½ éœ€è¦åœ¨ç©å®¶vipåˆ°æœŸåè¿”å›æ²¡æœ‰vipæ—¶çš„ç»„ï¼Œè¯·å¡«å†™ #last
   UUID-Mode: false
-  #ÊÇ·ñ¿ªÆôUUIDÄ£Ê½
+  #æ˜¯å¦å¼€å¯UUIDæ¨¡å¼
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
-  #Éú³ÉµÄ¼¤»îÂëÖĞ°üº¬µÄ×Ö·û
-  DisplayString: 'ÎŞ'
+  #ç”Ÿæˆçš„æ¿€æ´»ç ä¸­åŒ…å«çš„å­—ç¬¦
+  DisplayString: æ— 
   DataBase:
     Type: sqlite
-    #ÌîĞ´sqlite»òmysql
-    #ÌîĞ´mysqlĞèÌîĞ´ÏÂ·½Á¬½ÓĞÅÏ¢
+    #å¡«å†™sqliteæˆ–mysql
+    #å¡«å†™mysqléœ€å¡«å†™ä¸‹æ–¹è¿æ¥ä¿¡æ¯
     MySQL:
       addr: 127.0.0.1
-      #mysqlµØÖ·
+      #mysqlåœ°å€
       port: 3306
-      #¶Ë¿Ú
+      #ç«¯å£
       base: minecraft
-      #¿âÃû
+      #åº“å
       user: 'root'
-      #mysqlÓÃ»§Ãû
+      #mysqlç”¨æˆ·å
       pwd: 'pwdhere'
-      #mysqlÃÜÂë
+      #mysqlå¯†ç 
