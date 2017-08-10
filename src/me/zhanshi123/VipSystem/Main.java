@@ -18,6 +18,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.anitech.versioncomprator.VersionComprator;
+
 import me.zhanshi123.VipSystem.caches.PlaceholderCache;
 import me.zhanshi123.VipSystem.hook.placeholders.Papi;
 import me.zhanshi123.VipSystem.hook.vault.VaultHook;
@@ -120,7 +122,6 @@ public class Main extends JavaPlugin
 		new MessageManager();
 		double version=Double.valueOf(cm.getVersion());
 		cm.setVersion(getDescription().getVersion());
-		cm.saveConfig();
 		if(initDatabase())
 		{
 			
@@ -137,12 +138,18 @@ public class Main extends JavaPlugin
 		int secondVersion=Integer.valueOf(array[1]);
 		if(secondVersion<7)
 		{
-			db.executeUpdate("ALTER TABLE `players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
+			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
 		}
 		if(secondVersion<8)
 		{
-			db.executeUpdate("ALTER TABLE `vipkeys` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `key`;");
+			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"vipkeys` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `key`;");
 		}
+		if(secondVersion<15)
+		{
+			cm.setPreifx("");
+			cm.setDateFormat("yyyy-MM-dd");
+		}
+		cm.saveConfig();
 		pc=new PlaceholderCache();
 		perm = new VaultHook(instance).getPermission();
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
@@ -185,7 +192,6 @@ public class Main extends JavaPlugin
 		long end=System.currentTimeMillis();
 		Bukkit.getConsoleSender().sendMessage(MessageManager.LoadingComplete.replace("%time%", String.valueOf(end-start)));
 	}
-	
 	public void RegisterTasks()
 	{
 		new BukkitRunnable()
@@ -194,11 +200,10 @@ public class Main extends JavaPlugin
 			{
 				double version=updateDetect();
 				String strver=String.valueOf(version);
-				String[] array=strver.split("\\.");
-				int secondVersion=Integer.valueOf(array[1]);
 				String strver1=String.valueOf(cm.getVersion());
-				String[] array1=strver1.split("\\.");
-				int secondVersion1=Integer.valueOf(array1[1]);
+				VersionComprator compare=new VersionComprator();
+				//此处版本号判断使用的tapas4java的开源项目
+				//地址 https://github.com/tapas4java/VersionComprator
 				if(version==Double.valueOf(cm.getVersion()))
 				{
 					Bukkit.getConsoleSender().sendMessage(MessageManager.LatestVersion);
@@ -207,7 +212,7 @@ public class Main extends JavaPlugin
 				{
 					Bukkit.getConsoleSender().sendMessage(MessageManager.UpdateFailed);
 				}
-				else if(secondVersion>secondVersion1)
+				else if(compare.compare(strver, strver1)==1)
 				{
 					Bukkit.getConsoleSender().sendMessage(MessageManager.NewUpdate.replace("%version%", String.valueOf(version)));
 				}

@@ -1,4 +1,4 @@
-Version: 1.14
+Version: 1.15
 Config:
   Default: 'default'
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
@@ -7,7 +7,12 @@ Config:
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
   #生成的激活码中包含的字符
   DisplayString: 无
+  #如果没有VIP，PlaceholderAPI显示组的变量显示的字符
+  DateFormat: 'yyyy-MM-dd'
+  #语言文件中%date%变量的格式
   DataBase:
+    prefix: vipsys_
+    #数据表名称前缀，如果使用SQLite不用管
     Type: sqlite
     #填写sqlite或mysql
     #填写mysql需填写下方连接信息
@@ -18,6 +23,7 @@ Config:
       #端口
       base: minecraft
       #库名
+      #表名前缀
       user: 'root'
       #mysql用户名
       pwd: 'pwdhere'

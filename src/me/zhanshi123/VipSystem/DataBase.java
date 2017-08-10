@@ -78,8 +78,8 @@ public class DataBase {
 				conn = DriverManager.getConnection(addr,user,pwd);
 			}
 			statement = conn.createStatement();
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
 			ca=new MainCache(conn);
 			return true;
@@ -281,7 +281,7 @@ public class DataBase {
 			statement=conn.createStatement();
 			for(String x:key)
 			{
-				statement.executeUpdate("insert into vipkeys values ('"+x+"','"+group+"','"+day+"');");
+				statement.executeUpdate("insert into `"+Main.getConfigManager().getPrefix()+"vipkeys` values ('"+x+"','"+group+"','"+day+"');");
 			}
 			statement.close();
 		} catch (Exception e) {
@@ -295,7 +295,7 @@ public class DataBase {
 		try
 		{
 			statement=conn.createStatement();
-			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			ResultSet rs=statement.executeQuery("select * from `"+Main.getConfigManager().getPrefix()+"vipkeys` where `key` = '"+key+"';");
 			if(rs.next())
 			{
 				String group=rs.getString("vipg");
@@ -316,7 +316,7 @@ public class DataBase {
 		try
 		{
 			statement=conn.createStatement();
-			ResultSet rs=statement.executeQuery("select * from vipkeys where `vipg` = '"+group+"';");
+			ResultSet rs=statement.executeQuery("select * from `"+Main.getConfigManager().getPrefix()+"vipkeys` where `vipg` = '"+group+"';");
 			while(rs.next())
 			{
 				keys.add(rs.getString("key"));

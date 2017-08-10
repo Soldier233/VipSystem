@@ -58,8 +58,8 @@ public class MessageManager {
 			
 			config.set("commands.success.VipGave", "&a成功发送VIP到指定玩家");
 			config.set("commands.success.VipRemoved", "&aVIP成功移除");
-			config.set("commands.success.QueriedByAdmin", "&a%player%是%group%,剩余时间%left%天");
-			config.set("commands.success.QueriedBySelf", "&a你是%group%,剩余时间%left%天");
+			config.set("commands.success.QueriedByAdmin", "&a%player%是%group%,剩余时间%left%天，%date%到期");
+			config.set("commands.success.QueriedBySelf", "&a你是%group%,剩余时间%left%天，%date%到期");
 			config.set("commands.success.CacheSaved", "&a保存完成");
 			config.set("commands.success.CodeActivated", "&a成功激活!你得到了%vip% %left%天");
 			config.set("commands.success.ThreadCreated", "&a激活码创建线程已发起，请等待后台提示信息!");

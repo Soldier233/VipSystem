@@ -44,6 +44,15 @@ public class Utils {
 		}
 		return players;
 	}
+	public static String getExpiredDate(Date now,String left)
+	{
+		GregorianCalendar gc=new GregorianCalendar(); 
+		gc.setTime(now);
+		gc.add(5,Integer.valueOf(left));
+		Date passed=gc.getTime();
+		SimpleDateFormat format=new SimpleDateFormat(Main.getConfigManager().getDateFormat());
+		return format.format(passed);
+	}
 	public static float calculateLeftDays(Date now,String left)
 	{
 		GregorianCalendar gc=new GregorianCalendar(); 
@@ -87,7 +96,7 @@ public class Utils {
 		try 
 		{
 			Statement st=conn.createStatement();
-			st.executeUpdate("delete from players where player = '"+name+"';");
+			st.executeUpdate("delete from `"+Main.getConfigManager().getPrefix()+"players` where player = '"+name+"';");
 			st.close();
 		} 
 		catch (SQLException e) 
@@ -117,22 +126,22 @@ public class Utils {
 					Bukkit.getConsoleSender().sendMessage("保存玩家 "+name);
 				}
 				Info info=data.get(name);
-				PreparedStatement pst=conn.prepareStatement("select * from players where player = '"+name+"';");
+				PreparedStatement pst=conn.prepareStatement("select * from `"+Main.getConfigManager().getPrefix()+"players` where player = '"+name+"';");
 				ResultSet rs=pst.executeQuery();
 				if(rs.next())
 				{
 					if(debug)
 					{
-						String sql="UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';";
+						String sql="UPDATE `"+Main.getConfigManager().getPrefix()+"players` SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';";
 						Bukkit.getConsoleSender().sendMessage("更新玩家语句 "+sql);
 					}
 					Statement statement = conn.createStatement();
-					statement.execute("UPDATE players SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
+					statement.execute("UPDATE `"+Main.getConfigManager().getPrefix()+"players` SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
 					statement.close();
 				}
 				else
 				{
-					PreparedStatement pst1=conn.prepareStatement("insert into players values ('"+name+"','"+info.getYear()+"','"+info.getMonth()+"','"+info.getDay()+"','"+info.getLeft()+"','"+info.getGroup()+"','"+info.getExpired()+"');");
+					PreparedStatement pst1=conn.prepareStatement("insert into `"+Main.getConfigManager().getPrefix()+"players` values ('"+name+"','"+info.getYear()+"','"+info.getMonth()+"','"+info.getDay()+"','"+info.getLeft()+"','"+info.getGroup()+"','"+info.getExpired()+"');");
 					if(debug)
 					{
 						Bukkit.getConsoleSender().sendMessage(info.getInfoString()+" 对象不存在于数据库中");

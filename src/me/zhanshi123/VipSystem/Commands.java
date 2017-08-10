@@ -125,15 +125,17 @@ public class Commands implements CommandExecutor
 						String day=date.get(2);
 						String left=date.get(3);
 						SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+						Date now=null;
 						try {
-							Date now=format.parse(year+"-"+month+"-"+day);
+							now=format.parse(year+"-"+month+"-"+day);
 							days=Utils.calculateLeftDays(now, left);
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}	
 						group=Main.getDataBase().getGroup(name);
+						String dates=Utils.getExpiredDate(now, left);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
-						.replace("%group%", group).replace("%left%", String.valueOf(days))));	
+						.replace("%group%", group).replace("%date%", dates).replace("%left%", String.valueOf(days))));	
 					}
 					else
 					{
@@ -160,15 +162,17 @@ public class Commands implements CommandExecutor
 							String day=date.get(2);
 							String left=date.get(3);
 							SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+							Date now=null;
 							try {
-								Date now=format.parse(year+"-"+month+"-"+day);
+								now=format.parse(year+"-"+month+"-"+day);
 								days=Utils.calculateLeftDays(now, left);
 							} catch (ParseException e) {
 								e.printStackTrace();
 							}	
 							String group=Main.getDataBase().getGroup(name);
+							String dates=Utils.getExpiredDate(now, left);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedBySelf)
-									.replace("%group%", group).replace("%left%", String.valueOf(days)));	
+									.replace("%group%", group).replace("%left%", String.valueOf(days)).replace("%date%", dates));	
 						}
 						else
 						{

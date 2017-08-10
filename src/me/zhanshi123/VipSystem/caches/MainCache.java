@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 
 import me.zhanshi123.VipSystem.Info;
+import me.zhanshi123.VipSystem.Main;
 
 public class MainCache extends Cache
 {
@@ -36,14 +37,14 @@ public class MainCache extends Cache
 		HashMap<String,Info> data=new HashMap<String,Info>();
 		try
 		{
-			ResultSet rs=st.executeQuery("select * from players");
+			ResultSet rs=st.executeQuery("select * from `"+Main.getConfigManager().getPrefix()+"players`");
 			while(rs.next())
 			{
 				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
 				if(rs.getInt("expired")==1)
 				{
 					st1=conn.createStatement();
-					st1.executeUpdate("delete from players where player = '"+info.getPlayer()+"';");
+					st1.executeUpdate("delete from `"+Main.getConfigManager().getPrefix()+"players` where player = '"+info.getPlayer()+"';");
 					st1.close();
 				}
 				else
@@ -67,7 +68,7 @@ public class MainCache extends Cache
 	{
 		try {
 			st=conn.createStatement();
-			ResultSet rs=st.executeQuery("SELECT * from `players` where `player` = '"+name+"'");
+			ResultSet rs=st.executeQuery("SELECT * from `"+Main.getConfigManager().getPrefix()+"players` where `player` = '"+name+"'");
 			if(rs.next())
 			{
 				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));

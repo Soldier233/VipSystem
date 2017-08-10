@@ -34,6 +34,10 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 	}
+	public String getDateFormat()
+	{
+		return config.getString("Config.DateFormat");
+	}
 	public String getDisplayString()
 	{
 		return config.getString("Config.DisplayString");
@@ -89,4 +93,17 @@ public class ConfigManager {
 		text.add(config.getString("Config.DataBase.MySQL.pwd"));//4
 		return text;
 	}
+	public String getPrefix()
+	{
+		return config.getString("Config.DataBase.prefix");
+	}
+	public void setPreifx(String s)
+	{
+		config.set("Config.DataBase.prefix", s);
+	}
+	public void setDateFormat(String s)
+	{
+		config.set("Config.DateFormat", s);
+	}
+	
 }
