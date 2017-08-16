@@ -7,7 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,6 +104,15 @@ public class Commands implements CommandExecutor
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.HaveNoVip));	
 					}
 				}
+				else if(args[0].equalsIgnoreCase("list")&&sender.isOp())
+				{
+					sender.sendMessage((MessageManager.prefix+MessageManager.Showed).replace("&", "¡ì"));
+					HashMap<String,Info> data=Main.getDataBase().getDatas();
+					for(Entry<String,Info> e:data.entrySet())
+					{
+						sender.sendMessage(e.getValue().toString());
+					}
+				}
 				else if(args[0].equalsIgnoreCase("look")&&sender.isOp())
 				{
 					String name=args[1];
@@ -122,12 +133,20 @@ public class Commands implements CommandExecutor
 						List<String> date=Main.getDataBase().getDate(name);
 						long time=Long.valueOf(date.get(0));
 						String left=date.get(1);
-						Date now=new Date(time);
-						days=Utils.calculateLeftDays(now, left);
 						group=Main.getDataBase().getGroup(name);
-						String dates=Utils.getExpiredDate(now, left);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
-						.replace("%group%", group).replace("%date%", dates).replace("%left%", String.valueOf(days))));	
+						if(!left.equals("-1"))
+						{
+							Date now=new Date(time);
+							days=Utils.calculateLeftDays(now, left);
+							String dates=Utils.getExpiredDate(now, left);
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
+							.replace("%group%", group).replace("%date%", dates).replace("%left%", String.valueOf(days))));	
+						}
+						else
+						{
+							sender.sendMessage((MessageManager.prefix+MessageManager.QueriedByAdminPermanent).replace("%group%",group).replace("&", "¡ì")
+									.replace("%player%", p.getName()));
+						}
 					}
 					else
 					{
@@ -151,12 +170,19 @@ public class Commands implements CommandExecutor
 							List<String> date=Main.getDataBase().getDate(name);
 							long time=Long.valueOf(date.get(0));
 							String left=date.get(1);
-							Date now=new Date(time);
-							days=Utils.calculateLeftDays(now, left);
 							String group=Main.getDataBase().getGroup(name);
-							String dates=Utils.getExpiredDate(now, left);
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedBySelf)
-									.replace("%group%", group).replace("%left%", String.valueOf(days)).replace("%date%", dates));	
+							if(!left.equals("-1"))
+							{
+								Date now=new Date(time);
+								days=Utils.calculateLeftDays(now, left);
+								String dates=Utils.getExpiredDate(now, left);
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedBySelf)
+										.replace("%group%", group).replace("%left%", String.valueOf(days)).replace("%date%", dates));	
+							}
+							else
+							{
+								sender.sendMessage((MessageManager.prefix+MessageManager.QueriedBySelfPermanent).replace("&","¡ì").replace("%group%",group));
+							}
 						}
 						else
 						{
@@ -192,8 +218,11 @@ public class Commands implements CommandExecutor
 							{
 								Utils.addVip(name, key.getGroup(), String.valueOf(key.getDays()));
 								Main.getKeyManager().removeKey(key.getKey());
+								String days=key.getDays();
+								if(days.equals("-1"))
+									days=MessageManager.permanent;
 								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
-										.replace("%vip%", key.getGroup()).replace("%left%", key.getDays()));
+										.replace("%vip%", key.getGroup()).replace("%left%",days));
 							}
 							else
 							{
@@ -204,8 +233,11 @@ public class Commands implements CommandExecutor
 						{
 							Utils.addVip(name, key.getGroup(), key.getDays());
 							Main.getKeyManager().removeKey(key.getKey());
+							String days=key.getDays();
+							if(days.equals("-1"))
+								days=MessageManager.permanent;
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.CodeActivated)
-									.replace("%vip%", key.getGroup()).replace("%left%", key.getDays()));
+									.replace("%vip%", key.getGroup()).replace("%left%",days));
 						}
 					}
 				}

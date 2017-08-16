@@ -34,9 +34,24 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 	}
+	public FileConfiguration getConfig()
+	{
+		return config;
+	}
 	public String getDateFormat()
 	{
 		return config.getString("Config.DateFormat");
+	}
+	public String getLanguage()
+	{
+		if(config.isString("Config.language"))
+		{
+			return config.getString("Config.language");
+		}
+		else
+		{
+			return "en";
+		}
 	}
 	public String getDisplayString()
 	{

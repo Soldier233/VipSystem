@@ -1,10 +1,10 @@
 package me.zhanshi123.VipSystem;
 
 public class Info {
-	long time;
-	int left,expired;
+	long time,left;
+	int expired;
 	String player,group;
-	public Info(String player,long time,String group,int left,int expired)
+	public Info(String player,long time,String group,long left,int expired)
 	{
 		this.player=player;
 		this.time=time;
@@ -36,11 +36,11 @@ public class Info {
 	{
 		this.time = time;
 	}
-	public int getLeft()
+	public Long getLeft()
 	{
 		return left;
 	}
-	public void setLeft(int left)
+	public void setLeft(long left)
 	{
 		this.left=left;
 	}
@@ -51,5 +51,12 @@ public class Info {
 	public void setGroup(String group)
 	{
 		this.group = group;
+	}
+	@Override
+	public String toString()
+	{
+		StringBuilder sb=new StringBuilder();
+		sb.append(player).append(" ").append(time).append(" ").append(group).append(" ").append(left);
+		return sb.toString();
 	}
 }

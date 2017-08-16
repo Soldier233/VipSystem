@@ -6,10 +6,11 @@ commands:
     - '&3&l- &b/vipsys viptime &9Query your VIP states'
     - '&3&l- &b/vipsys key <Key> &9Use a activation code'
     admin:
+    - '&3&l- &b/vipsys list &9Show the list of all the vips'
     - "&3&l- &b/vipsys look <Player> &9Lookup the player's VIP group"
-    - '&3&l- &b/vipsys give <Player> <Group> <days> &9Give the player specific VIP group for specific days'
+    - '&3&l- &b/vipsys give <Player> <Group> <secs> &9Give the player specific VIP group for specific secs'
     - "&3&l- &b/vipsys remove <Player> &9Remove the player's VIP group"
-    - '&3&l- &b/vipsys createkey <amount> <Group> <days> &9Create a number of activation codes of the specific VIP Group'
+    - '&3&l- &b/vipsys createkey <amount> <Group> <secs> &9Create a number of activation codes of the specific VIP Group'
     - "&3&l- &b/vipsys export <Group> &9Export the VIP group's activation codes"
     - '&3&l- &b/vipsys save &9Save cache data immediately'
   error:
@@ -24,13 +25,16 @@ commands:
   success:
     VipGave: '&aGive vip succesfully'
     VipRemoved: '&aRemove vip succesfully'
-    QueriedByAdmin: '&a%player% is in %group%,%left% day(s) remaining,expried date:%date%'
-    QueriedBySelf: '&aYou are %group%,%left% day(s) remaining,expried date:%date%'
+    QueriedByAdmin: '&a%player% is in %group%,%left% sec(s) remaining,expried date:%date%'
+    QueriedByAdminPermanent: '&a%player% is in %group% permanently'
+    QueriedBySelf: '&aYou are %group%,%left% sec(s) remaining,expried date:%date%'
+    QueriedBySelfPermanent: '&aYou are in %group% permanently'
     CacheSaved: '&aSave succesfully'
     CodeActivated: '&aActivate succesfully!You get %vip% for %left% day(s)'
     ThreadCreated: '&aActivation code thread has been created! Please wait!'
     CodeExport: '&aActivation codes exported,takes up %time%ms，file path:%path%'
-      
+    Showed: '&aHere are the list!Format: Player,ActivateMillis,LeftSecs,VipGroup'
+  permanent: 'permanent'
 #All the color codes below are §
 general:
   console:

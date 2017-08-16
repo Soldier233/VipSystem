@@ -26,6 +26,7 @@ import me.zhanshi123.VipSystem.hook.placeholders.Papi;
 import me.zhanshi123.VipSystem.hook.vault.VaultHook;
 import me.zhanshi123.VipSystem.listeners.PlayerListener;
 import me.zhanshi123.VipSystem.managers.ConfigManager;
+import me.zhanshi123.VipSystem.managers.CustomCommandManager;
 import me.zhanshi123.VipSystem.managers.KeyManager;
 import me.zhanshi123.VipSystem.managers.MessageManager;
 import me.zhanshi123.VipSystem.metrics.Metrics;
@@ -115,10 +116,16 @@ public class Main extends JavaPlugin
 			return true;
 		}
 	}
+	private void saveMessages()
+	{
+		saveResource("messages/zh_CN.yml", false);
+		saveResource("messages/en.yml", false);
+	}
 	public void onEnable()
 	{
 		long start=System.currentTimeMillis();
 		instance=this;
+		saveMessages();
 		initConfig();
 		new MessageManager();
 		double version=Double.valueOf(cm.getVersion());
@@ -162,6 +169,7 @@ public class Main extends JavaPlugin
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
 		RegisterTasks();
 		km=new KeyManager();
+		new CustomCommandManager();
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
 		Metrics metrics = new Metrics(this);
 		boolean b=false;
@@ -189,9 +197,25 @@ public class Main extends JavaPlugin
 					Main.getPermission().playerRemoveGroup(x, Main.getPermission().getPrimaryGroup(x));
 					Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
 				}
-				if(Main.getDataBase().isPassed(name))
+				String left=db.getDate(name).get(1);
+				if(Long.valueOf(left)==-1L)
+					continue;
+				Date expired=Utils.getExpriedDate(db.getActiveDate(name),left);
+				long millis=expired.getTime()-(new Date().getTime());
+				if(millis<0)
 				{
 					Utils.removeVip(x);
+				}
+				else if(millis<60000)
+				{
+					new BukkitRunnable()
+					{
+						public void run()
+						{
+							if(x.isOnline())
+								Utils.removeVip(x);
+						}
+					}.runTaskLater(instance, (millis/1000)*20L);
 				}
 			}
 			Main.getPlaceholderCache().flushData(name);
@@ -256,7 +280,10 @@ public class Main extends JavaPlugin
 							perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
 							perm.playerAddGroup(x, db.getGroup(name));
 						}
-						Date expired=Utils.getExpriedDate(db.getActiveDate(name), db.getDate(name).get(1));
+						String left=db.getDate(name).get(1);
+						if(Long.valueOf(left)==-1L)
+							continue;
+						Date expired=Utils.getExpriedDate(db.getActiveDate(name),left);
 						long millis=expired.getTime()-(new Date().getTime());
 						if(millis<0)
 						{
@@ -272,10 +299,6 @@ public class Main extends JavaPlugin
 										Utils.removeVip(x);
 								}
 							}.runTaskLater(instance, (millis/1000)*20L);
-						}
-						if(db.isPassed(name))
-						{
-							Utils.removeVip(x);
 						}
 					}
 				}

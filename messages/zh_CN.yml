@@ -3,9 +3,10 @@ commands:
   help:
     player:
     - '&6&l==========&a&lVipSystem&6&l=========='
-    - '&3&l- &b/vipsys viptime &9查询剩余VIP天数'
+    - '&3&l- &b/vipsys viptime &9查询剩余VIP状态'
     - '&3&l- &b/vipsys key <CDK> &9使用cdk'
     admin:
+    - '&3&l- &b/vipsys list &9查询VIP列表'
     - '&3&l- &b/vipsys look <玩家名> &9查询指定玩家VIP'
     - '&3&l- &b/vipsys give <玩家名> <VIP组> <秒数> &9给目标玩家指定秒数的VIP'
     - '&3&l- &b/vipsys remove <玩家名> &9移除目标玩家的VIP'
@@ -24,13 +25,16 @@ commands:
   success:
     VipGave: '&a成功发送VIP到指定玩家'
     VipRemoved: '&aVIP成功移除'
-    QueriedByAdmin: '&a%player%是%group%,剩余时间%left%天，%date%到期'
-    QueriedBySelf: '&a你是%group%,剩余时间%left%天，%date%到期'
+    QueriedByAdmin: '&a%player%是%group%,剩余时间%left%秒，%date%到期'
+    QueriedByAdminPermanent: '&a%player%是永久%group%'
+    QueriedBySelf: '&a你是%group%,剩余时间%left%秒，%date%到期'
+    QueriedBySelfPermanent: '&a你是永久%group%'
     CacheSaved: '&a保存完成'
-    CodeActivated: '&a成功激活!你得到了%vip% %left%天'
+    CodeActivated: '&a成功激活!你得到了%vip% %left%秒'
     ThreadCreated: '&a激活码创建线程已发起，请等待后台提示信息!'
     CodeExport: '&a激活码已经导出完毕，用时%time%ms，路径为%path%'
-      
+    Showed: '&aVIP列表如下 分别对应 玩家名，开通时间(SystemMillis)，剩余秒数，vip组'
+  permanent: '永久'
 #下面的所有颜色代码均为 §
 general:
   console:

@@ -231,6 +231,22 @@ public class DataBase {
 			return false;
 		}
 	}
+	
+	public HashMap<String,Info> getDatas()
+	{
+		HashMap<String,Info> data=new HashMap<String,Info>();
+		try {
+			statement=conn.createStatement();
+			ResultSet rs=statement.executeQuery("SELECT * FROM `"+Main.getConfigManager().getPrefix()+"players`;");
+			while(rs.next())
+			{
+				data.put(rs.getString("player"),new Info(rs.getString("player"),rs.getLong("time"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
 	/*
 	 * Key²¿·Ö
 	 */

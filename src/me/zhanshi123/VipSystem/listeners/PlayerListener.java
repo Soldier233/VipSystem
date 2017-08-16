@@ -1,9 +1,12 @@
 package me.zhanshi123.VipSystem.listeners;
 
+import java.util.Date;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.zhanshi123.VipSystem.Info;
 import me.zhanshi123.VipSystem.Main;
@@ -32,9 +35,25 @@ public class PlayerListener implements Listener
 				Main.getPermission().playerRemoveGroup(x, Main.getPermission().getPrimaryGroup(x));
 				Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
 			}
-			if(Main.getDataBase().isPassed(name))
+			String left=Main.getDataBase().getDate(name).get(1);
+			if(Long.valueOf(left)==-1L)
+				return;
+			Date expired=Utils.getExpriedDate(Main.getDataBase().getActiveDate(name),left);
+			long millis=expired.getTime()-(new Date().getTime());
+			if(millis<0)
 			{
 				Utils.removeVip(x);
+			}
+			else if(millis<60000)
+			{
+				new BukkitRunnable()
+				{
+					public void run()
+					{
+						if(x.isOnline())
+							Utils.removeVip(x);
+					}
+				}.runTaskLater(Main.getInstance(), (millis/1000)*20L);
 			}
 		}
 		Main.getPlaceholderCache().flushData(name);

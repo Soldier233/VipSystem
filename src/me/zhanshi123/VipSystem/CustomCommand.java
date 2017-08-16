@@ -4,11 +4,12 @@ import java.util.List;
 
 public class CustomCommand {
 	String vip;
-	List<String> cmds;
-	public CustomCommand(String vip,List<String> cmds)
+	List<String> a,e;
+	public CustomCommand(String vip,List<String> a,List<String> e)
 	{
 		this.vip=vip;
-		this.cmds=cmds;
+		this.a=a;
+		this.e=e;
 	}
 	public void setVip(String vip)
 	{
@@ -18,12 +19,20 @@ public class CustomCommand {
 	{
 		return vip;
 	}
-	public void setCmds(List<String> cmds)
+	public void setActivate(List<String> a)
 	{
-		this.cmds=cmds;
+		this.a=a;
 	}
-	public List<String> getCmds()
+	public List<String> getActivate()
 	{
-		return cmds;
+		return a;
+	}
+	public void setExpire(List<String> e)
+	{
+		this.e=e;
+    }
+	public List<String> getExpire()
+	{
+		return e;
 	}
 }

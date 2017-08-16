@@ -26,6 +26,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.zhanshi123.VipSystem.managers.CustomCommandManager;
+
 public class Utils {
 	public static Collection<Player> getOnlinePlayers()
 	{
@@ -85,7 +87,7 @@ public class Utils {
 			p=Bukkit.getPlayer(name);
 		}
 		String last=Main.getPermission().getPrimaryGroup(p);
-		if(Integer.valueOf(secs)<=60)
+		if(Integer.valueOf(secs)<=60&&Integer.valueOf(secs)>=0)
 		{
 			int sec=Integer.valueOf(secs);
 			long delay=sec*20L;
@@ -102,16 +104,33 @@ public class Utils {
 		Main.getPermission().playerAddGroup(p, group);
 		Main.getPlaceholderCache().flushData(name);
 		Main.getDataBase().addVip(name, group+"#"+last, secs);
+		CustomCommand cc=CustomCommandManager.getInstance().getCustomCommand(group);
+		if(cc!=null)
+		{
+			for(String x:cc.getActivate())
+			{
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), x.replace("%player%", p.getName()));
+			}
+		}
 	}
 	public static void removeVip(Player p)
 	{
-		Main.getPermission().playerRemoveGroup(p, Main.getDataBase().getGroup(Utils.getPlayerName(p)));
+		String group=Main.getDataBase().getGroup(Utils.getPlayerName(p));
+		Main.getPermission().playerRemoveGroup(p, group);
 		if(Main.getConfigManager().getDefault().equalsIgnoreCase("#last"))
 			Main.getPermission().playerAddGroup(p, Main.getDataBase().getLastGroup(Utils.getPlayerName(p)));
 		else
 			Main.getPermission().playerAddGroup(p, Main.getConfigManager().getDefault());
 		Main.getPlaceholderCache().flushData(Utils.getPlayerName(p));
 		Main.getDataBase().removeVip(Utils.getPlayerName(p));
+		CustomCommand cc=CustomCommandManager.getInstance().getCustomCommand(group);
+		if(cc!=null)
+		{
+			for(String x:cc.getExpire())
+			{
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), x.replace("%player%", p.getName()));
+			}
+		}
 	}
 	
 	public static void removeFromDatabase(Connection conn,String name)

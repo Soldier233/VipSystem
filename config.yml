@@ -1,5 +1,7 @@
 Version: 2.0
 Config:
+  language: zh_CN
+  #语言，填写VipSystem/messages文件夹中的文件名
   Default: 'default'
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
   UUID-Mode: false
