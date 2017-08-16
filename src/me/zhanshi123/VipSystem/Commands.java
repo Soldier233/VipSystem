@@ -120,18 +120,10 @@ public class Commands implements CommandExecutor
 					if(Main.getDataBase().getExpired(name)==0)
 					{
 						List<String> date=Main.getDataBase().getDate(name);
-						String year=date.get(0);
-						String month=date.get(1);
-						String day=date.get(2);
-						String left=date.get(3);
-						SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-						Date now=null;
-						try {
-							now=format.parse(year+"-"+month+"-"+day);
-							days=Utils.calculateLeftDays(now, left);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}	
+						long time=Long.valueOf(date.get(0));
+						String left=date.get(1);
+						Date now=new Date(time);
+						days=Utils.calculateLeftDays(now, left);
 						group=Main.getDataBase().getGroup(name);
 						String dates=Utils.getExpiredDate(now, left);
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedByAdmin.replace("%player%", p.getName())
@@ -157,18 +149,10 @@ public class Commands implements CommandExecutor
 						if(Main.getDataBase().getExpired(name)==0)
 						{
 							List<String> date=Main.getDataBase().getDate(name);
-							String year=date.get(0);
-							String month=date.get(1);
-							String day=date.get(2);
-							String left=date.get(3);
-							SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-							Date now=null;
-							try {
-								now=format.parse(year+"-"+month+"-"+day);
-								days=Utils.calculateLeftDays(now, left);
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}	
+							long time=Long.valueOf(date.get(0));
+							String left=date.get(1);
+							Date now=new Date(time);
+							days=Utils.calculateLeftDays(now, left);
 							String group=Main.getDataBase().getGroup(name);
 							String dates=Utils.getExpiredDate(now, left);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.QueriedBySelf)

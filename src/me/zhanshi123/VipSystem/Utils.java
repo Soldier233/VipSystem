@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Utils {
 	public static Collection<Player> getOnlinePlayers()
@@ -48,22 +50,30 @@ public class Utils {
 	{
 		GregorianCalendar gc=new GregorianCalendar(); 
 		gc.setTime(now);
-		gc.add(5,Integer.valueOf(left));
+		gc.add(Calendar.SECOND,Integer.valueOf(left));
 		Date passed=gc.getTime();
 		SimpleDateFormat format=new SimpleDateFormat(Main.getConfigManager().getDateFormat());
 		return format.format(passed);
+	}
+	public static Date getExpriedDate(Date now,String left)
+	{
+		GregorianCalendar gc=new GregorianCalendar(); 
+		gc.setTime(now);
+		gc.add(Calendar.SECOND,Integer.valueOf(left));
+		Date passed=gc.getTime();
+		return passed;
 	}
 	public static float calculateLeftDays(Date now,String left)
 	{
 		GregorianCalendar gc=new GregorianCalendar(); 
 		gc.setTime(now);
-		gc.add(5,Integer.valueOf(left));
+		gc.add(Calendar.SECOND,Integer.valueOf(left));
 		Date passed=gc.getTime();
 		float days=Float.valueOf(passed.getTime()-new Date().getTime())/Float.valueOf(1000*3600*24);
 		float day=(float)(Math.round(days*100))/100;
 		return day;
 	}
-	public static void addVip(String name,String group,String day)
+	public static void addVip(String name,String group,String secs)
 	{
 		Player p;
 		if(Main.getConfigManager().getUUIDMode())
@@ -75,10 +85,23 @@ public class Utils {
 			p=Bukkit.getPlayer(name);
 		}
 		String last=Main.getPermission().getPrimaryGroup(p);
+		if(Integer.valueOf(secs)<=60)
+		{
+			int sec=Integer.valueOf(secs);
+			long delay=sec*20L;
+			new BukkitRunnable()
+			{
+				public void run()
+				{
+					if(p.isOnline())
+						removeVip(p);
+				}
+			}.runTaskLater(Main.getInstance(), delay);
+		}
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
 		Main.getPermission().playerAddGroup(p, group);
 		Main.getPlaceholderCache().flushData(name);
-		Main.getDataBase().addVip(name, group+"#"+last, day);
+		Main.getDataBase().addVip(name, group+"#"+last, secs);
 	}
 	public static void removeVip(Player p)
 	{
@@ -104,6 +127,7 @@ public class Utils {
 			e.printStackTrace();
 		}
 	}
+	
 	static boolean debug=false;
 	public static long saveCache(Connection conn,HashMap<String,Info> data)
 	{
@@ -130,22 +154,13 @@ public class Utils {
 				ResultSet rs=pst.executeQuery();
 				if(rs.next())
 				{
-					if(debug)
-					{
-						String sql="UPDATE `"+Main.getConfigManager().getPrefix()+"players` SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';";
-						Bukkit.getConsoleSender().sendMessage("更新玩家语句 "+sql);
-					}
 					Statement statement = conn.createStatement();
-					statement.execute("UPDATE `"+Main.getConfigManager().getPrefix()+"players` SET year='"+info.getYear()+"',month='"+info.getMonth()+"',day='"+info.getDay()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
+					statement.execute("UPDATE `"+Main.getConfigManager().getPrefix()+"players` SET `time`='"+info.getTime()+"',`left`='"+info.getLeft()+"',vipg='"+info.getGroup()+"',expired='"+info.getExpired()+"' WHERE player='"+name+"';");
 					statement.close();
 				}
 				else
 				{
-					PreparedStatement pst1=conn.prepareStatement("insert into `"+Main.getConfigManager().getPrefix()+"players` values ('"+name+"','"+info.getYear()+"','"+info.getMonth()+"','"+info.getDay()+"','"+info.getLeft()+"','"+info.getGroup()+"','"+info.getExpired()+"');");
-					if(debug)
-					{
-						Bukkit.getConsoleSender().sendMessage(info.getInfoString()+" 对象不存在于数据库中");
-					}
+					PreparedStatement pst1=conn.prepareStatement("insert into `"+Main.getConfigManager().getPrefix()+"players` values ('"+name+"','"+info.getTime()+"','"+info.getLeft()+"','"+info.getGroup()+"','"+info.getExpired()+"');");
 					pst1.executeUpdate();
 					pst1.close();
 				}

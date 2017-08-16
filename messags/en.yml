@@ -1,0 +1,47 @@
+prefix: '&6&lVipSystem &7>>> &r'
+commands:
+  help:
+    player:
+    - '&6&l==========&a&lVipSystem&6&l=========='
+    - '&3&l- &b/vipsys viptime &9Query your VIP states'
+    - '&3&l- &b/vipsys key <Key> &9Use a activation code'
+    admin:
+    - "&3&l- &b/vipsys look <Player> &9Lookup the player's VIP group"
+    - '&3&l- &b/vipsys give <Player> <Group> <days> &9Give the player specific VIP group for specific days'
+    - "&3&l- &b/vipsys remove <Player> &9Remove the player's VIP group"
+    - '&3&l- &b/vipsys createkey <amount> <Group> <days> &9Create a number of activation codes of the specific VIP Group'
+    - "&3&l- &b/vipsys export <Group> &9Export the VIP group's activation codes"
+    - '&3&l- &b/vipsys save &9Save cache data immediately'
+  error:
+    PlayerNotFound: '&cPlayer not found'
+    AlreadyHaveVip: '&cThe player have vip group already'
+    HaveNoVip: "&cThe player doesn't have vip group"
+    YouHaveNoVip: "&cYou don't have vip"
+    ConsoleForbid: '&cThe command is blocked to Console'
+    CodeNotFound: '&cCode not found'
+    YouAlreadyHaveVip: '&cYou already have other vip'
+    CodeExportFailed: '&cFailed!Reason:%reason%'
+  success:
+    VipGave: '&aGive vip succesfully'
+    VipRemoved: '&aRemove vip succesfully'
+    QueriedByAdmin: '&a%player% is in %group%,%left% day(s) remaining,expried date:%date%'
+    QueriedBySelf: '&aYou are %group%,%left% day(s) remaining,expried date:%date%'
+    CacheSaved: '&aSave succesfully'
+    CodeActivated: '&aActivate succesfully!You get %vip% for %left% day(s)'
+    ThreadCreated: '&aActivation code thread has been created! Please wait!'
+    CodeExport: '&aActivation codes exported,takes up %time%ms，file path:%path%'
+      
+#All the color codes below are §
+general:
+  console:
+    CacheSaved: '[VipSystem Cacher] §a§lData saved!Takes up §c%time%§a§lms'
+    CodeCreated: '§6§lVipSystem §7>>> §aCreate complete!Takes up %time%ms'
+    Loading: '§6§lVipSystem §7>>> §aVipSystem is loading!'
+    LoadingComplete: '§6§lVipSystem §7>>> §aVipSystem takes up %time%ms and loaded succesfully! If you have any issues,Please send me a PM on spigotmc or email me at i@zhanshi123.me'
+    DatabaseInitError: '§6§lVipSystem §7>>> §cDatabase caused a fatal error!Stop loading.'
+    FailedToGetOnlinePlayers: '§6§lVipSystem §7>>> §aFailed to get online players,Please contact the author'
+  updater:
+    StartDetecting: '§6§lVipSystem §7>>> §aDetecting updates'
+    UpdateFailed: '§6§lVipSystem §7>>> §aFailed to get updates'
+    LatestVersion: '§6§lVipSystem §7>>> §aYou are running the latest version of VipSystem'
+    NewUpdate: '§6§lVipSystem §7>>> §a%version% has released!'

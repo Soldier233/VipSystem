@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,6 +150,12 @@ public class Main extends JavaPlugin
 			cm.setPreifx("");
 			cm.setDateFormat("yyyy-MM-dd");
 		}
+		if(firstVersion<2)
+		{
+			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` DROP COLUMN `year`, DROP COLUMN `month`, DROP COLUMN `day`, ADD COLUMN `time`  varchar(50) NOT NULL AFTER `player`;");
+			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` MODIFY COLUMN `left`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `time`;");
+			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"vipkeys` MODIFY COLUMN `day`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `vipg`;");
+		}
 		cm.saveConfig();
 		pc=new PlaceholderCache();
 		perm = new VaultHook(instance).getPermission();
@@ -248,6 +255,23 @@ public class Main extends JavaPlugin
 						{
 							perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
 							perm.playerAddGroup(x, db.getGroup(name));
+						}
+						Date expired=Utils.getExpriedDate(db.getActiveDate(name), db.getDate(name).get(1));
+						long millis=expired.getTime()-(new Date().getTime());
+						if(millis<0)
+						{
+							Utils.removeVip(x);
+						}
+						else if(millis<60000)
+						{
+							new BukkitRunnable()
+							{
+								public void run()
+								{
+									if(x.isOnline())
+										Utils.removeVip(x);
+								}
+							}.runTaskLater(instance, (millis/1000)*20L);
 						}
 						if(db.isPassed(name))
 						{

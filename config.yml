@@ -1,4 +1,4 @@
-Version: 1.15
+Version: 2.0
 Config:
   Default: 'default'
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
@@ -8,6 +8,20 @@ Config:
   #生成的激活码中包含的字符
   DisplayString: 无
   #如果没有VIP，PlaceholderAPI显示组的变量显示的字符
+  Commands:
+    vip:
+      activate:
+        - 'say %player%开通了VIP了，大家快去膜拜他啊!'
+        #填写如果你需要在玩家开通 vip 时附加执行的命令
+      expire:
+        - 'say %player%的VIP过期了，趁他没续费，赶快去弄死他'
+        #填写如果你需要在玩家 vip 过期时附加执行的命令
+#格式如下
+   #组名:
+     #activate:
+       #- '命令'
+     #expire:
+       #- '命令'
   DateFormat: 'yyyy-MM-dd'
   #语言文件中%date%变量的格式
   DataBase:

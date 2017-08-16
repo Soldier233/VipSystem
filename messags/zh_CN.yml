@@ -1,0 +1,47 @@
+prefix: '&6&lVipSystem &7>>> &r'
+commands:
+  help:
+    player:
+    - '&6&l==========&a&lVipSystem&6&l=========='
+    - '&3&l- &b/vipsys viptime &9查询剩余VIP天数'
+    - '&3&l- &b/vipsys key <CDK> &9使用cdk'
+    admin:
+    - '&3&l- &b/vipsys look <玩家名> &9查询指定玩家VIP'
+    - '&3&l- &b/vipsys give <玩家名> <VIP组> <秒数> &9给目标玩家指定秒数的VIP'
+    - '&3&l- &b/vipsys remove <玩家名> &9移除目标玩家的VIP'
+    - '&3&l- &b/vipsys createkey <数量> <VIP组> <秒数> &9创建cdk'
+    - '&3&l- &b/vipsys export <VIP组> &9导出某个组的所有未使用的cdk'
+    - '&3&l- &b/vipsys save &9立即保存缓存(默认5分钟一次)'
+  error:
+    PlayerNotFound: '&c玩家不在线!'
+    AlreadyHaveVip: '&c该玩家已拥有VIP'
+    HaveNoVip: '&c该玩家没有VIP'
+    YouHaveNoVip: '&c你没有VIP'
+    ConsoleForbid: '&c后台禁止使用该命令'
+    CodeNotFound: '&c未找到该激活码'
+    YouAlreadyHaveVip: '&c你已经拥有其他的VIP了'
+    CodeExportFailed: '&c导出失败!原因:%reason%'
+  success:
+    VipGave: '&a成功发送VIP到指定玩家'
+    VipRemoved: '&aVIP成功移除'
+    QueriedByAdmin: '&a%player%是%group%,剩余时间%left%天，%date%到期'
+    QueriedBySelf: '&a你是%group%,剩余时间%left%天，%date%到期'
+    CacheSaved: '&a保存完成'
+    CodeActivated: '&a成功激活!你得到了%vip% %left%天'
+    ThreadCreated: '&a激活码创建线程已发起，请等待后台提示信息!'
+    CodeExport: '&a激活码已经导出完毕，用时%time%ms，路径为%path%'
+      
+#下面的所有颜色代码均为 §
+general:
+  console:
+    CacheSaved: '[VipSystem缓存系统] §a§l对缓存数据进行保存完成，花费了§c%time%§a§lms'
+    CodeCreated: '§6§lVipSystem §7>>> §a创建完成!如果有报错请仔细查阅问题!用时%time%ms'
+    Loading: '§6§lVipSystem §7>>> §a插件开始加载'
+    LoadingComplete: '§6§lVipSystem §7>>> §a插件加载完成 用时%time%ms 作者QQ 1224954468 技术交流群563012939'
+    DatabaseInitError: '§6§lVipSystem §7>>> §c数据库初始化失败，停止加载'
+    FailedToGetOnlinePlayers: '§6§lVipSystem §7>>> §a无法获取在线玩家，请联系作者'
+  updater:
+    StartDetecting: '§6§lVipSystem §7>>> §a检查更新中'
+    UpdateFailed: '§6§lVipSystem §7>>> §a获取更新失败'
+    LatestVersion: '§6§lVipSystem §7>>> §a你目前使用的版本是最新版'
+    NewUpdate: '§6§lVipSystem §7>>> §a新版本%version%发布了哦，赶快去下载吧!'

@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -78,8 +79,8 @@ public class DataBase {
 				conn = DriverManager.getConnection(addr,user,pwd);
 			}
 			statement = conn.createStatement();
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"players` (`player` varchar(64) NOT NULL,`year` varchar(5) NOT NULL,`month` varchar(5) NOT NULL,`day` varchar(5) NOT NULL,`left` varchar(5) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(5) NOT NULL,PRIMARY KEY (`key`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"players` (`player` varchar(64) NOT NULL,`time` varchar(50) NOT NULL,`left` varchar(50) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(50) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
 			ca=new MainCache(conn);
 			return true;
@@ -89,19 +90,15 @@ public class DataBase {
 			return false;
 		}
 	}
-	//String year=getDate(name).get(0);
-	//String month=getDate(name).get(1);
-	//String day=getDate(name).get(2);
-	//String left=getDate(name).get(3);
+	//String time=getDate(name).get(0);
+	//String left=getDate(name).get(1);
 	public List<String> getDate(String name)
 	{
 		List<String> date=new ArrayList<String>();
 		if(data.containsKey(name))
 		{
 			Info info=data.get(name);
-			date.add(String.valueOf(info.getYear()));
-			date.add(String.valueOf(info.getMonth()));
-			date.add(String.valueOf(info.getDay()));
+			date.add(String.valueOf(info.getTime()));
 			date.add(String.valueOf(info.getLeft()));
 		}
 		else
@@ -109,6 +106,13 @@ public class DataBase {
 			data=null;
 		}
 		return date;
+	}
+	public Date getActiveDate(String name)
+	{
+		List<String> date=getDate(name);
+		long time=Long.valueOf(date.get(0));
+		Date now=new Date(time);
+		return now;
 	}
 	public String getGroup(String name)
 	{
@@ -127,13 +131,12 @@ public class DataBase {
 	}
 	public void addVip(String name,String group,String day)
 	{
-		Date date=new Date();
 		int old=0;
 		if(exists(name))
 		{
-			old=Integer.valueOf(getDate(name).get(3));
+			old=Integer.valueOf(getDate(name).get(1));
 		}
-		setDate(name, String.valueOf(date.getYear()+1900), String.valueOf(date.getMonth()+1), String.valueOf(date.getDate()), String.valueOf(old+Integer.valueOf(day)));
+		setDate(name,System.currentTimeMillis(), String.valueOf(old+Integer.valueOf(day)));
 		setGroup(name,group);
 		setExpired(name,0);
 	}
@@ -146,7 +149,7 @@ public class DataBase {
 	}
 	public void mkdir(String name)
 	{
-		data.put(name, new Info(name,0,0,0,"0",0,1));
+		data.put(name, new Info(name,0L,"0",0,1));
 	}
 	public int getExpired(String name)
 	{
@@ -174,16 +177,14 @@ public class DataBase {
 		ex=data.containsKey(name);
 		return ex;
 	}
-	public void setDate(String name,String year,String month,String day,String left)
+	public void setDate(String name,long time,String left)
 	{
 		if(!exists(name))
 		{
 			mkdir(name);
 		}
 		Info info=data.get(name);
-		info.setYear(Integer.valueOf(year));
-		info.setMonth(Integer.valueOf(month));
-		info.setDay(Integer.valueOf(day));
+		info.setTime(time);
 		info.setLeft(Integer.valueOf(left));
 		data.remove(name);
 		data.put(name, info);
@@ -209,27 +210,19 @@ public class DataBase {
 		if(exists(name))
 		{
 			List<String> date=getDate(name);
-			String year=date.get(0);
-			String month=date.get(1);
-			String day=date.get(2);
-			String left=date.get(3);
-			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-			try {
-				Date now=format.parse(year+"-"+month+"-"+day);
-				GregorianCalendar gc=new GregorianCalendar(); 
-				gc.setTime(now);
-				gc.add(5,Integer.valueOf(left));
-				Date passed=gc.getTime();
-				if(passed.before(new Date()))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
+			long time=Long.valueOf(date.get(0));
+			String left=date.get(1);
+			Date now=new Date(time);
+			GregorianCalendar gc=new GregorianCalendar(); 
+			gc.setTime(now);
+			gc.add(Calendar.SECOND,Integer.valueOf(left));
+			Date passed=gc.getTime();
+			if(passed.before(new Date()))
+			{
+				return true;
+			}
+			else
+			{
 				return false;
 			}
 		}

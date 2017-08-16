@@ -1,7 +1,5 @@
 package me.zhanshi123.VipSystem.caches;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,18 +21,10 @@ public class PlaceholderCache extends Cache{
 			return;
 		}
 		List<String> date=Main.getDataBase().getDate(name);
-		String year=date.get(0);
-		String month=date.get(1);
-		String day=date.get(2);
-		String left=date.get(3);
-		float days=0;
-		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			Date now=format.parse(year+"-"+month+"-"+day);
-			days=Utils.calculateLeftDays(now, left);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		long time=Long.valueOf(date.get(0));
+		String left=date.get(1);
+		Date now=new Date(time);
+		float days=Utils.calculateLeftDays(now, left);
 		if(data.containsKey(name))
 		{
 			data.remove(name);

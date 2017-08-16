@@ -40,7 +40,7 @@ public class MainCache extends Cache
 			ResultSet rs=st.executeQuery("select * from `"+Main.getConfigManager().getPrefix()+"players`");
 			while(rs.next())
 			{
-				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
+				Info info=new Info(rs.getString("player"),rs.getLong("time"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
 				if(rs.getInt("expired")==1)
 				{
 					st1=conn.createStatement();
@@ -50,10 +50,6 @@ public class MainCache extends Cache
 				else
 				{
 					data.put(rs.getString("player"),info);
-					if(debug)
-					{
-						Bukkit.getConsoleSender().sendMessage(info.getInfoString());
-					}
 				}
 			}
 			st.close();
@@ -71,7 +67,7 @@ public class MainCache extends Cache
 			ResultSet rs=st.executeQuery("SELECT * from `"+Main.getConfigManager().getPrefix()+"players` where `player` = '"+name+"'");
 			if(rs.next())
 			{
-				Info info=new Info(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
+				Info info=new Info(rs.getString("player"),rs.getLong("time"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
 				return info;
 			}
 			else
