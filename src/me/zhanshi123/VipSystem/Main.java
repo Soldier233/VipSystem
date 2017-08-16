@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -159,9 +160,14 @@ public class Main extends JavaPlugin
 		}
 		if(firstVersion<2)
 		{
-			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` DROP COLUMN `year`, DROP COLUMN `month`, DROP COLUMN `day`, ADD COLUMN `time`  varchar(50) NOT NULL AFTER `player`;");
-			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` MODIFY COLUMN `left`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `time`;");
+			HashMap<String,InfoOld> old=db.getOldData();
+			db.executeUpdate("DROP TABLE `"+cm.getPrefix()+"players`;");
+			db.executeUpdate("CREATE TABLE IF NOT EXISTS `"+Main.getConfigManager().getPrefix()+"players` (`player` varchar(64) NOT NULL,`time` varchar(50) NOT NULL,`left` varchar(50) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
+//			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` DROP COLUMN `year`, DROP COLUMN `month`, DROP COLUMN `day`, ADD COLUMN `time`  varchar(50) NOT NULL AFTER `player`;");
+//			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` MODIFY COLUMN `left`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `time`;");
 			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"vipkeys` MODIFY COLUMN `day`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `vipg`;");
+			db.insertNewData(old);
+			Bukkit.getConsoleSender().sendMessage(MessageManager.prefix.replace("&", "¡ì")+"¡ìaData convert complete! From:"+strver+" To: 2.x");
 		}
 		cm.saveConfig();
 		pc=new PlaceholderCache();

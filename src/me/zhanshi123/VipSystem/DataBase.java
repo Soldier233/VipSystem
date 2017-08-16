@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -337,5 +338,64 @@ public class DataBase {
 			e.printStackTrace();
 		}
 		return keys;
+	}
+	//
+	public HashMap<String,InfoOld> getOldData()
+	{
+		HashMap<String,InfoOld> data=new HashMap<String,InfoOld>();
+		try
+		{
+			Statement st=conn.createStatement();
+			ResultSet rs=st.executeQuery("select * from `"+Main.getConfigManager().getPrefix()+"players`");
+			while(rs.next())
+			{
+				InfoOld info=new InfoOld(rs.getString("player"),rs.getInt("year"),rs.getInt("month"),rs.getInt("day"),rs.getString("vipg"),rs.getInt("left"),rs.getInt("expired"));
+				data.put(rs.getString("player"),info);
+			}
+			st.close();
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		return data;
+	}
+	public void insertNewData(HashMap<String,InfoOld> old)
+	{
+		HashMap<String,Info> newdata = new HashMap<String,Info>(); 
+		for(Entry<String,InfoOld> e:old.entrySet())
+		{
+			InfoOld oi=e.getValue();
+			String player=oi.getPlayer();
+			String group=oi.getGroup();
+			int expired=oi.getExpired();
+			long left=oi.getLeft();
+			String year=String.valueOf(oi.getYear());
+			String month=String.valueOf(oi.getMonth());
+			String day=String.valueOf(oi.getDay());
+			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+			Date now=null;
+			try {
+				now=format.parse(year+"-"+month+"-"+day);
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+			}
+			long time=now.getTime();
+			
+			
+			newdata.put(player, new Info(player,time,group,left*86400,expired));
+		}
+		
+		try {
+			Statement st=conn.createStatement();
+			for(Entry<String,Info> entry:newdata.entrySet())
+			{
+				Info info=entry.getValue();
+				st.executeUpdate("insert into `"+Main.getConfigManager().getPrefix()+"players` values ('"+info.getPlayer()+"','"+info.getTime()+"','"+info.getLeft()+"','"+info.getGroup()+"','"+info.getExpired()+"');");
+			}
+			st.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 	}
 }
