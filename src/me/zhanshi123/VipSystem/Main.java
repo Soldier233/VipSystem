@@ -145,15 +145,15 @@ public class Main extends JavaPlugin
 		String[] array=strver.split("\\.");
 		int firstVersion=Integer.valueOf(array[0]);
 		int secondVersion=Integer.valueOf(array[1]);
-		if(secondVersion<7)
+		if(secondVersion<7&&firstVersion==1)
 		{
 			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"players` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `left`;");
 		}
-		if(secondVersion<8)
+		if(secondVersion<8&&firstVersion==1)
 		{
 			db.executeUpdate("ALTER TABLE `"+cm.getPrefix()+"vipkeys` MODIFY COLUMN `vipg`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `key`;");
 		}
-		if(secondVersion<15)
+		if(secondVersion<15&&firstVersion==1)
 		{
 			cm.setPreifx("");
 			cm.setDateFormat("yyyy-MM-dd");
@@ -184,7 +184,7 @@ public class Main extends JavaPlugin
 			b=new Papi(this).hook();
 		}
 		
-		for(Player x:Utils.getOnlinePlayers())
+		for(final Player x:Utils.getOnlinePlayers())
 		{
 			String name=Utils.getPlayerName(x);
 			Info info=Main.getDataBase().getMainCache().getData(name);
@@ -276,7 +276,7 @@ public class Main extends JavaPlugin
 					Bukkit.getConsoleSender().sendMessage(MessageManager.FailedToGetOnlinePlayers);
 					return;
 				}
-				for(Player x:players)
+				for(final Player x:players)
 				{
 					String name=Utils.getPlayerName(x);
 					if(db.exists(name))

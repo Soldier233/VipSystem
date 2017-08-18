@@ -17,7 +17,7 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e)
 	{
-		Player x=e.getPlayer();
+		final Player x=e.getPlayer();
 		String name=Utils.getPlayerName(x);
 		Info info=Main.getDataBase().getMainCache().getData(name);
 		if(info==null)

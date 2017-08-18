@@ -3,10 +3,7 @@ package me.zhanshi123.VipSystem;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -62,11 +59,12 @@ public class Commands implements CommandExecutor
 					}
 					String group=args[2];
 					String day=args[3];
+					long time=Utils.getTimeFromString(day);
 					if(Main.getDataBase().exists(name))
 					{
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
 						{
-							Utils.addVip(name, group, String.valueOf(day));
+							Utils.addVip(name, group, String.valueOf(time));
 							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 						}
@@ -77,7 +75,7 @@ public class Commands implements CommandExecutor
 					}
 					else
 					{
-						Utils.addVip(name, group, day);
+						Utils.addVip(name, group, String.valueOf(time));
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
 					}
 				}
@@ -246,7 +244,8 @@ public class Commands implements CommandExecutor
 					int amount=Integer.valueOf(args[1]);
 					String group=args[2];
 					String days=args[3];
-					Main.getKeyManager().create(amount, group, days);
+					long time=Utils.getTimeFromString(days);
+					Main.getKeyManager().create(amount, group, String.valueOf(time));
 					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.ThreadCreated));
 				}
 				else if(args[0].equalsIgnoreCase("export")&&sender.isOp())
