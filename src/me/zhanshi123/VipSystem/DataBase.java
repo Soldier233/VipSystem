@@ -255,7 +255,7 @@ public class DataBase {
 	{
 		try {
 			statement=conn.createStatement();
-			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			ResultSet rs=statement.executeQuery("select * from "+Main.getConfigManager().getPrefix()+"vipkeys where `key` = '"+key+"';");
 			if(rs.next())
 			{
 				statement.close();
@@ -275,10 +275,10 @@ public class DataBase {
 	{
 		try {
 			statement=conn.createStatement();
-			ResultSet rs=statement.executeQuery("select * from vipkeys where `key` = '"+key+"';");
+			ResultSet rs=statement.executeQuery("select * from "+Main.getConfigManager().getPrefix()+"vipkeys where `key` = '"+key+"';");
 			if(rs.next())
 			{
-				statement.executeUpdate("delete from vipkeys where `key` = '"+key+"';");
+				statement.executeUpdate("delete from "+Main.getConfigManager().getPrefix()+"vipkeys where `key` = '"+key+"';");
 			}
 			statement.close();
 		} catch (Exception e) {

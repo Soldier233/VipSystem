@@ -32,6 +32,24 @@ public class CustomCommandManager {
 	{
 		return ccm;
 	}
+	public void reload()
+	{
+		data.clear();
+		FileConfiguration config=Main.getConfigManager().getConfig();
+		if(config.isConfigurationSection("Config.Commands"))
+		{
+			Set<String> keys=config.getConfigurationSection("Config.Commands").getKeys(false);
+			for(String s:keys)
+			{
+				List<String> activate,expire;
+				activate=config.getStringList("Config.Commands."+s+".activate");
+				expire=config.getStringList("Config.Commands."+s+".expire");
+				CustomCommand cc=new CustomCommand(s,activate,expire);
+				register(cc);
+			}
+		}
+		ccm=this;
+	}
 	//------·Ö¸î------
 	private HashMap<String,CustomCommand> data=new HashMap<String,CustomCommand>();
 	public void register(CustomCommand cc)

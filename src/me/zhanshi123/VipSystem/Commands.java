@@ -15,6 +15,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.zhanshi123.VipSystem.managers.ConfigManager;
+import me.zhanshi123.VipSystem.managers.CustomCommandManager;
 import me.zhanshi123.VipSystem.managers.MessageManager;
 
 public class Commands implements CommandExecutor
@@ -55,7 +57,7 @@ public class Commands implements CommandExecutor
 					else
 					{
 						sender.sendMessage((MessageManager.prefix+MessageManager.PlayerNotFound).replace('&', '¡ì'));
-						return true;
+						return false;
 					}
 					String group=args[2];
 					String day=args[3];
@@ -67,16 +69,19 @@ public class Commands implements CommandExecutor
 							Utils.addVip(name, group, String.valueOf(time));
 							Main.getPlaceholderCache().flushData(name);
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
+							return true;
 						}
 						else
 						{
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.AlreadyHaveVip));
+							return false;
 						}
 					}
 					else
 					{
 						Utils.addVip(name, group, String.valueOf(time));
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipGave));
+						return true;
 					}
 				}
 				else if(args[0].equalsIgnoreCase("remove")&&sender.isOp())
@@ -90,12 +95,12 @@ public class Commands implements CommandExecutor
 					else
 					{
 						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.PlayerNotFound));
-						return true;
+						return false;
 					}
 					if(Main.getDataBase().getExpired(name)==0)
 					{
 						Utils.removeVip(p);
-						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipRemoved));	
+						sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.VipRemoved));
 					}
 					else
 					{
@@ -187,6 +192,12 @@ public class Commands implements CommandExecutor
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.YouHaveNoVip));	
 						}
 					}
+				}
+				else if(args[0].equalsIgnoreCase("reload")&&sender.isOp())
+				{
+					Main.cm=new ConfigManager(Main.getInstance());
+					CustomCommandManager.getInstance().reload();
+					sender.sendMessage((MessageManager.prefix+"¡ìaOK!").replace("&", "¡ì"));
 				}
 				else if(args[0].equalsIgnoreCase("key"))
 				{

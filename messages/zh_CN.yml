@@ -13,6 +13,7 @@ commands:
     - '&3&l- &b/vipsys createkey <数量> <VIP组> <时间> &9创建cdk'
     - '&3&l- &b/vipsys export <VIP组> &9导出某个组的所有未使用的cdk'
     - '&3&l- &b/vipsys save &9立即保存缓存(默认5分钟一次)'
+    - '&3&l- &b/vipsys reload &9重载除了数据库部分的配置文件'
     - '&c注: 时间为XdXhXmXs 例如1d为1天 2h为2小时 10m为10分钟 5s为5秒 1d10m5s为1天10分钟5秒'
   error:
     PlayerNotFound: '&c玩家不在线!'

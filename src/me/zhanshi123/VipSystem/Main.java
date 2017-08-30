@@ -81,7 +81,7 @@ public class Main extends JavaPlugin
     private static KeyManager km = null;
     Plugin plugin=this;
     private static DataBase db=null;
-    private static ConfigManager cm=null;
+    static ConfigManager cm=null;
 	public void onDisable()
 	{
 		db.getCache();
@@ -93,7 +93,6 @@ public class Main extends JavaPlugin
 		if(!f.exists())
 		{
 			saveDefaultConfig();
-			System.out.println("configÒÑÉú³É");
 		}
 		
 		cm=new ConfigManager(plugin);

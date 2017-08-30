@@ -13,6 +13,7 @@ commands:
     - '&3&l- &b/vipsys createkey <amount> <Group> <Time> &9Create a number of activation codes of the specific VIP Group'
     - "&3&l- &b/vipsys export <Group> &9Export the VIP group's activation codes"
     - '&3&l- &b/vipsys save &9Save cache data immediately'
+    - '&3&l- &b/vipsys reload &9Reload parts of configs(except database)'
     - '&cAttention! The parameter Time must be in the following format'
     - '&c 1d for 1 day  1h for 1 hour  1m for 1 minute  1s for 1 second'
     - '&c 1d1h1m2s for 1 day & 1 hour & 1 minute & 2 seconds'
