@@ -1,9 +1,8 @@
 name: VipSystem
-version: 2.2
+version: 2.3
 author: Soldier
 depend: [Vault]
 softdepend: [PlaceholderAPI]
 main: me.zhanshi123.VipSystem.Main
 commands:
   vipsys:
-    usage: /vipsys

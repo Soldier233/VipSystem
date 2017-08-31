@@ -8,7 +8,7 @@ import me.zhanshi123.VipSystem.Main;
 import me.zhanshi123.VipSystem.Utils;
 import me.zhanshi123.VipSystem.hook.placeholders.PlaceholderInfo;
 
-public class PlaceholderCache extends Cache{
+public class PlaceholderCache implements Cache{
 	HashMap<String, PlaceholderInfo> data = new HashMap<String,PlaceholderInfo>();
 	@Override
 	public HashMap<String, PlaceholderInfo> getData() {

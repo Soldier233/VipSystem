@@ -130,20 +130,56 @@ public class Utils {
 		}
 		final Player player = p;
 		String last = Main.getPermission().getPrimaryGroup(p);
-		if (Integer.valueOf(secs) < 60 && Integer.valueOf(secs) >= 0) {
-			int sec = Integer.valueOf(secs);
-			long delay = sec * 20L;
-			new BukkitRunnable() {
-				public void run() {
-					if (player.isOnline())
-						removeVip(player);
-				}
-			}.runTaskLater(Main.getInstance(), delay);
+		String olast=null;
+		if(Main.getDataBase().exists(name))
+		{
+			olast=Main.getDataBase().getLastGroup(name);
 		}
+		if(!secs.equalsIgnoreCase("-1"))
+		{
+			if (Integer.valueOf(secs) < 60 && Integer.valueOf(secs) >= 0) {
+				List<String> date=Main.getDataBase().getDate(name);
+				if(date==null)
+				{
+					//新开的情况下
+					int sec = Integer.valueOf(secs);
+					long delay = sec * 20L;
+					new BukkitRunnable() {
+						public void run() {
+							if (player.isOnline())
+								removeVip(player);
+						}
+					}.runTaskLater(Main.getInstance(), delay);
+				}
+				else
+				{
+					//续费的情况下
+					if((Integer.valueOf(secs)+Integer.valueOf(date.get(1)))<60)
+					{
+						int sec = Integer.valueOf(secs);
+						long delay = sec * 20L;
+						new BukkitRunnable() {
+							public void run() {
+								if (player.isOnline())
+									removeVip(player);
+							}
+						}.runTaskLater(Main.getInstance(), delay);
+					}
+				}
+				
+			}
+		}		
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
 		Main.getPermission().playerAddGroup(p, group);
 		Main.getPlaceholderCache().flushData(name);
-		Main.getDataBase().addVip(name, group + "#" + last, secs);
+		if(last.equalsIgnoreCase(group))
+		{
+			Main.getDataBase().addVip(name, group + "#" + olast, secs);
+		}
+		else
+		{
+			Main.getDataBase().addVip(name, group + "#" + last, secs);
+		}
 		CustomCommand cc = CustomCommandManager.getInstance().getCustomCommand(group);
 		if (cc != null) {
 			for (String x : cc.getActivate()) {

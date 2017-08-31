@@ -137,9 +137,19 @@ public class DataBase {
 		{
 			old=Integer.valueOf(getDate(name).get(1));
 		}
-		setDate(name,System.currentTimeMillis(), String.valueOf(old+Integer.valueOf(day)));
-		setGroup(name,group);
-		setExpired(name,0);
+		if(day.equalsIgnoreCase("-1"))
+		{
+			setDate(name,System.currentTimeMillis(), day);
+			setGroup(name,group);
+			setExpired(name,0);
+		}
+		else
+		{
+			setDate(name,System.currentTimeMillis(), String.valueOf(old+Integer.valueOf(day)));
+			setGroup(name,group);
+			setExpired(name,0);
+		}
+		
 	}
 	public String getLastGroup(String name)
 	{

@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import me.zhanshi123.VipSystem.Info;
 import me.zhanshi123.VipSystem.Main;
 
-public class MainCache extends Cache
+public class MainCache implements Cache
 {
 	boolean debug=false;
 	Connection conn=null;

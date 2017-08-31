@@ -61,7 +61,9 @@ public class Commands implements CommandExecutor
 					}
 					String group=args[2];
 					String day=args[3];
-					long time=Utils.getTimeFromString(day);
+					long time=-1L;
+					if(!day.equalsIgnoreCase("-1"))
+						time=Utils.getTimeFromString(day);
 					if(Main.getDataBase().exists(name))
 					{
 						if(Main.getDataBase().getGroup(name).equals(group)||Main.getDataBase().getGroup(name).equals("0"))
