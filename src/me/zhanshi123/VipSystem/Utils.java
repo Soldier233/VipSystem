@@ -218,46 +218,48 @@ public class Utils {
 
 	static boolean debug = false;
 
-	public static long saveCache(Connection conn, HashMap<String, Info> data) {
-		long starttime = System.currentTimeMillis();
-		List<String> players = new ArrayList<>();
-		Iterator<Entry<String, Info>> i = data.entrySet().iterator();
-		while (i.hasNext()) {
-			Entry<String, Info> e = i.next();
-			String name = e.getKey();
-			players.add(name);
-		}
+	public static void saveCache(final Connection conn, final HashMap<String, Info> data) {
+		new BukkitRunnable()
+		{
+			public void run()
+			{				
+				List<String> players = new ArrayList<>();
+				Iterator<Entry<String, Info>> i = data.entrySet().iterator();
+				while (i.hasNext()) {
+					Entry<String, Info> e = i.next();
+					String name = e.getKey();
+					players.add(name);
+				}
 
-		for (String name : players) {
-			try {
-				if (debug) {
-					Bukkit.getConsoleSender().sendMessage("保存玩家 " + name);
+				for (String name : players) {
+					try {
+						if (debug) {
+							Bukkit.getConsoleSender().sendMessage("保存玩家 " + name);
+						}
+						Info info = data.get(name);
+						PreparedStatement pst = conn.prepareStatement("select * from `" + Main.getConfigManager().getPrefix()
+								+ "players` where player = '" + name + "';");
+						ResultSet rs = pst.executeQuery();
+						if (rs.next()) {
+							Statement statement = conn.createStatement();
+							statement.execute("UPDATE `" + Main.getConfigManager().getPrefix() + "players` SET `time`='"
+									+ info.getTime() + "',`left`='" + info.getLeft() + "',vipg='" + info.getGroup()
+									+ "',expired='" + info.getExpired() + "' WHERE player='" + name + "';");
+							statement.close();
+						} else {
+							PreparedStatement pst1 = conn.prepareStatement("insert into `" + Main.getConfigManager().getPrefix()
+									+ "players` values ('" + name + "','" + info.getTime() + "','" + info.getLeft() + "','"
+									+ info.getGroup() + "','" + info.getExpired() + "');");
+							pst1.executeUpdate();
+							pst1.close();
+						}
+						pst.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
-				Info info = data.get(name);
-				PreparedStatement pst = conn.prepareStatement("select * from `" + Main.getConfigManager().getPrefix()
-						+ "players` where player = '" + name + "';");
-				ResultSet rs = pst.executeQuery();
-				if (rs.next()) {
-					Statement statement = conn.createStatement();
-					statement.execute("UPDATE `" + Main.getConfigManager().getPrefix() + "players` SET `time`='"
-							+ info.getTime() + "',`left`='" + info.getLeft() + "',vipg='" + info.getGroup()
-							+ "',expired='" + info.getExpired() + "' WHERE player='" + name + "';");
-					statement.close();
-				} else {
-					PreparedStatement pst1 = conn.prepareStatement("insert into `" + Main.getConfigManager().getPrefix()
-							+ "players` values ('" + name + "','" + info.getTime() + "','" + info.getLeft() + "','"
-							+ info.getGroup() + "','" + info.getExpired() + "');");
-					pst1.executeUpdate();
-					pst1.close();
-				}
-				pst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
-		}
-
-		long stoptime = System.currentTimeMillis();
-		return stoptime - starttime;
+		}.runTaskAsynchronously(Main.getInstance());
 	}
 
 	public static String getPlayerName(Player p) {

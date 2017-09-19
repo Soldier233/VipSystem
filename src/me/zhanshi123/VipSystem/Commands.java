@@ -258,7 +258,16 @@ public class Commands implements CommandExecutor
 					String group=args[2];
 					String days=args[3];
 					long time=Utils.getTimeFromString(days);
-					Main.getKeyManager().create(amount, group, String.valueOf(time));
+					String stime;
+					if(days.equalsIgnoreCase("-1"))
+					{
+						stime=days;
+					}
+					else
+					{
+						stime=String.valueOf(time);
+					}
+					Main.getKeyManager().create(amount, group, stime);
 					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', MessageManager.prefix+MessageManager.ThreadCreated));
 				}
 				else if(args[0].equalsIgnoreCase("export")&&sender.isOp())
