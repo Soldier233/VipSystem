@@ -13,31 +13,31 @@ import me.zhanshi123.VipSystem.Utils;
 
 public class Papi extends EZPlaceholderHook
 {
-	  public Papi(Main plugin)
-	  {
-	    super(plugin, "VipSystem");
-	  }
+	public Papi(Main plugin)
+	{
+		super(plugin, "VipSystem");
+	}
 
 	@Override
-	public String onPlaceholderRequest(Player p, String str) 
+	public String onPlaceholderRequest(Player p, String str)
 	{
-		if(str.equalsIgnoreCase("leftdays"))
+		if (str.equalsIgnoreCase("leftdays"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
 				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLeftDays());
 			else
 				return "0";
 		}
-		else if(str.equalsIgnoreCase("group"))
+		else if (str.equalsIgnoreCase("group"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
 				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getVipGroup());
 			else
 				return Main.getConfigManager().getDisplayString();
 		}
-		else if(str.equalsIgnoreCase("lastgroup"))
+		else if (str.equalsIgnoreCase("lastgroup"))
 		{
-			if(Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
 				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLastGroup());
 			else
 				return Main.getConfigManager().getDisplayString();

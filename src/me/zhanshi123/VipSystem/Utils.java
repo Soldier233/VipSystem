@@ -30,9 +30,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.zhanshi123.VipSystem.managers.CustomCommandManager;
 
-public class Utils {
+public class Utils
+{
 
-	public static long getTimeFromString(String a) {
+	public static long getTimeFromString(String a)
+	{
 		String dMatches = "[0-9]+d";
 		String hMatches = "[0-9]+h";
 		String mMatches = "[0-9]+m";
@@ -43,22 +45,26 @@ public class Utils {
 		long s = 0L;
 		Pattern p = Pattern.compile(dMatches);
 		Matcher ma = p.matcher(a);
-		if (ma.find()) {
+		if (ma.find())
+		{
 			d = getTime(ma.group());
 		}
 		p = Pattern.compile(hMatches);
 		ma = p.matcher(a);
-		if (ma.find()) {
+		if (ma.find())
+		{
 			h = getTime(ma.group());
 		}
 		p = Pattern.compile(mMatches);
 		ma = p.matcher(a);
-		if (ma.find()) {
+		if (ma.find())
+		{
 			m = getTime(ma.group());
 		}
 		p = Pattern.compile(sMatches);
 		ma = p.matcher(a);
-		if (ma.find()) {
+		if (ma.find())
+		{
 			s = getTime(ma.group());
 		}
 		long time = d * 86400L;
@@ -68,33 +74,42 @@ public class Utils {
 		return time;
 	}
 
-	private static long getTime(String a) {
+	private static long getTime(String a)
+	{
 		Pattern p = Pattern.compile("[0-9]+");
 		Matcher m = p.matcher(a);
-		if (m.find()) {
+		if (m.find())
+		{
 			return Long.parseLong(m.group());
 		}
 		return 0L;
 	}
 
-
-	public static Collection<Player> getOnlinePlayers() {
+	public static Collection<Player> getOnlinePlayers()
+	{
 		Collection<Player> players = null;
-		try {
+		try
+		{
 			Class<?> clazz = Class.forName("org.bukkit.Bukkit");
 			Method method = clazz.getMethod("getOnlinePlayers");
-			if (method.getReturnType().equals(Collection.class)) {
+			if (method.getReturnType().equals(Collection.class))
+			{
 				players = (Collection<Player>) method.invoke(Bukkit.getServer());
-			} else {
+			}
+			else
+			{
 				players = Arrays.asList((Player[]) method.invoke(Bukkit.getServer()));
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		return players;
 	}
 
-	public static String getExpiredDate(Date now, String left) {
+	public static String getExpiredDate(Date now, String left)
+	{
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(now);
 		gc.add(Calendar.SECOND, Integer.valueOf(left));
@@ -103,7 +118,8 @@ public class Utils {
 		return format.format(passed);
 	}
 
-	public static Date getExpriedDate(Date now, String left) {
+	public static Date getExpriedDate(Date now, String left)
+	{
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(now);
 		gc.add(Calendar.SECOND, Integer.valueOf(left));
@@ -111,7 +127,8 @@ public class Utils {
 		return passed;
 	}
 
-	public static float calculateLeftDays(Date now, String left) {
+	public static float calculateLeftDays(Date now, String left)
+	{
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(now);
 		gc.add(Calendar.SECOND, Integer.valueOf(left));
@@ -121,58 +138,67 @@ public class Utils {
 		return day;
 	}
 
-	public static void addVip(String name, String group, String secs) {
+	public static void addVip(String name, String group, String secs)
+	{
 		Player p;
-		if (Main.getConfigManager().getUUIDMode()) {
+		if (Main.getConfigManager().getUUIDMode())
+		{
 			p = Bukkit.getPlayer(UUID.fromString(name));
-		} else {
+		}
+		else
+		{
 			p = Bukkit.getPlayer(name);
 		}
 		final Player player = p;
 		String last = Main.getPermission().getPrimaryGroup(p);
-		String olast=null;
-		if(Main.getDataBase().exists(name))
+		String olast = null;
+		if (Main.getDataBase().exists(name))
 		{
-			olast=Main.getDataBase().getLastGroup(name);
+			olast = Main.getDataBase().getLastGroup(name);
 		}
-		if(!secs.equalsIgnoreCase("-1"))
+		if (!secs.equalsIgnoreCase("-1"))
 		{
-			if (Integer.valueOf(secs) < 60 && Integer.valueOf(secs) >= 0) {
-				List<String> date=Main.getDataBase().getDate(name);
-				if(date==null)
+			if (Integer.valueOf(secs) < 60 && Integer.valueOf(secs) >= 0)
+			{
+				List<String> date = Main.getDataBase().getDate(name);
+				if (date == null)
 				{
-					//新开的情况下
+					// 新开的情况下
 					int sec = Integer.valueOf(secs);
 					long delay = sec * 20L;
-					new BukkitRunnable() {
-						public void run() {
+					new BukkitRunnable()
+					{
+						public void run()
+						{
 							if (player.isOnline())
-								removeVip(player);
+								removeVip(player.getName());
 						}
 					}.runTaskLater(Main.getInstance(), delay);
 				}
 				else
 				{
-					//续费的情况下
-					if((Integer.valueOf(secs)+Integer.valueOf(date.get(1)))<60)
+					// 续费的情况下
+					if ((Integer.valueOf(secs) + Integer.valueOf(date.get(1))) < 60)
 					{
 						int sec = Integer.valueOf(secs);
 						long delay = sec * 20L;
-						new BukkitRunnable() {
-							public void run() {
+						new BukkitRunnable()
+						{
+							public void run()
+							{
 								if (player.isOnline())
-									removeVip(player);
+									removeVip(player.getName());
 							}
 						}.runTaskLater(Main.getInstance(), delay);
 					}
 				}
-				
+
 			}
-		}		
+		}
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
 		Main.getPermission().playerAddGroup(p, group);
 		Main.getPlaceholderCache().flushData(name);
-		if(last.equalsIgnoreCase(group))
+		if (last.equalsIgnoreCase(group))
 		{
 			Main.getDataBase().addVip(name, group + "#" + olast, secs);
 		}
@@ -181,14 +207,18 @@ public class Utils {
 			Main.getDataBase().addVip(name, group + "#" + last, secs);
 		}
 		CustomCommand cc = CustomCommandManager.getInstance().getCustomCommand(group);
-		if (cc != null) {
-			for (String x : cc.getActivate()) {
+		if (cc != null)
+		{
+			for (String x : cc.getActivate())
+			{
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), x.replace("%player%", p.getName()));
 			}
 		}
 	}
 
-	public static void removeVip(Player p) {
+	public static void removeVip(String name)
+	{
+		Player p = Bukkit.getPlayer(name);
 		String group = Main.getDataBase().getGroup(Utils.getPlayerName(p));
 		Main.getPermission().playerRemoveGroup(p, group);
 		if (Main.getConfigManager().getDefault().equalsIgnoreCase("#last"))
@@ -198,79 +228,100 @@ public class Utils {
 		Main.getPlaceholderCache().flushData(Utils.getPlayerName(p));
 		Main.getDataBase().removeVip(Utils.getPlayerName(p));
 		CustomCommand cc = CustomCommandManager.getInstance().getCustomCommand(group);
-		if (cc != null) {
-			for (String x : cc.getExpire()) {
+		if (cc != null)
+		{
+			for (String x : cc.getExpire())
+			{
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), x.replace("%player%", p.getName()));
 			}
 		}
 	}
 
-	public static void removeFromDatabase(Connection conn, String name) {
-		try {
+	public static void removeFromDatabase(Connection conn, String name)
+	{
+		try
+		{
 			Statement st = conn.createStatement();
 			st.executeUpdate(
 					"delete from `" + Main.getConfigManager().getPrefix() + "players` where player = '" + name + "';");
 			st.close();
-		} catch (SQLException e) {
+		}
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}
 
-	static boolean debug = false;
-
-	public static void saveCache(final Connection conn, final HashMap<String, Info> data) {
+	public static void saveCache(final Connection conn, final HashMap<String, Info> data)
+	{
 		new BukkitRunnable()
 		{
 			public void run()
-			{				
+			{
 				List<String> players = new ArrayList<>();
 				Iterator<Entry<String, Info>> i = data.entrySet().iterator();
-				while (i.hasNext()) {
+				while (i.hasNext())
+				{
 					Entry<String, Info> e = i.next();
 					String name = e.getKey();
 					players.add(name);
 				}
-
-				for (String name : players) {
-					try {
-						if (debug) {
-							Bukkit.getConsoleSender().sendMessage("保存玩家 " + name);
-						}
+				try
+				{
+					PreparedStatement query = conn.prepareStatement(
+							"SELECT * FROM `" + Main.getConfigManager().getPrefix() + "players` WHERE `player` = ?;");
+					PreparedStatement update = conn.prepareStatement(
+							"UPDATE * FROM `" + Main.getConfigManager().getPrefix() + "players` SET `time` = ?,"
+									+ " `left` = ?, `vipg`= ?, `expired` = ? WHERE `player` = ?;");
+					PreparedStatement insert = conn.prepareStatement(
+							"INSERT INTO `" + Main.getConfigManager().getPrefix() + "players` VALUES(?,?,?,?,?);");
+					for (String name : players)
+					{
 						Info info = data.get(name);
-						PreparedStatement pst = conn.prepareStatement("select * from `" + Main.getConfigManager().getPrefix()
-								+ "players` where player = '" + name + "';");
-						ResultSet rs = pst.executeQuery();
-						if (rs.next()) {
-							Statement statement = conn.createStatement();
-							statement.execute("UPDATE `" + Main.getConfigManager().getPrefix() + "players` SET `time`='"
-									+ info.getTime() + "',`left`='" + info.getLeft() + "',vipg='" + info.getGroup()
-									+ "',expired='" + info.getExpired() + "' WHERE player='" + name + "';");
-							statement.close();
-						} else {
-							PreparedStatement pst1 = conn.prepareStatement("insert into `" + Main.getConfigManager().getPrefix()
-									+ "players` values ('" + name + "','" + info.getTime() + "','" + info.getLeft() + "','"
-									+ info.getGroup() + "','" + info.getExpired() + "');");
-							pst1.executeUpdate();
-							pst1.close();
+						query.setString(1, name);
+						ResultSet rs = query.executeQuery();
+						if (rs.next())
+						{
+							update.setString(1, String.valueOf(info.getTime()));
+							update.setString(2, String.valueOf(info.getLeft()));
+							update.setString(3, info.getGroup());
+							update.setString(4, String.valueOf(info.getExpired()));
+							update.setString(5, name);
+							update.executeUpdate();
 						}
-						pst.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
+						else
+						{
+							insert.setString(1, name);
+							insert.setString(2, String.valueOf(info.getTime()));
+							insert.setString(3, String.valueOf(info.getLeft()));
+							insert.setString(4, info.getGroup());
+							insert.setString(5, String.valueOf(info.getExpired()));
+							insert.executeUpdate();
+						}
 					}
+				}
+				catch (SQLException e1)
+				{
+					e1.printStackTrace();
 				}
 			}
 		}.runTaskAsynchronously(Main.getInstance());
 	}
 
-	public static String getPlayerName(Player p) {
-		if (Main.getConfigManager().getUUIDMode()) {
+	public static String getPlayerName(Player p)
+	{
+		if (Main.getConfigManager().getUUIDMode())
+		{
 			return p.getUniqueId().toString();
-		} else {
+		}
+		else
+		{
 			return p.getName();
 		}
 	}
 
-	public static Player getPlayer(String uuid) {
+	public static Player getPlayer(String uuid)
+	{
 		return Bukkit.getPlayer(UUID.fromString(uuid));
 	}
 }
