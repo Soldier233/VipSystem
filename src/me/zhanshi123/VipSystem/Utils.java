@@ -251,7 +251,57 @@ public class Utils
 			e.printStackTrace();
 		}
 	}
-
+	
+	public static void saveCacheSync(final Connection conn, final HashMap<String, Info> data)
+	{
+		List<String> players = new ArrayList<>();
+		Iterator<Entry<String, Info>> i = data.entrySet().iterator();
+		while (i.hasNext())
+		{
+			Entry<String, Info> e = i.next();
+			String name = e.getKey();
+			players.add(name);
+		}
+		try
+		{
+			PreparedStatement query = conn.prepareStatement(
+					"SELECT * FROM `" + Main.getConfigManager().getPrefix() + "players` WHERE `player` = ?;");
+			PreparedStatement update = conn.prepareStatement(
+					"UPDATE `" + Main.getConfigManager().getPrefix() + "players` SET `time` = ?,"
+							+ " `left` = ?, `vipg`= ?, `expired` = ? WHERE `player` = ?;");
+			PreparedStatement insert = conn.prepareStatement(
+					"INSERT INTO `" + Main.getConfigManager().getPrefix() + "players` VALUES(?,?,?,?,?);");
+			for (String name : players)
+			{
+				Info info = data.get(name);
+				query.setString(1, name);
+				ResultSet rs = query.executeQuery();
+				if (rs.next())
+				{
+					update.setString(1, String.valueOf(info.getTime()));
+					update.setString(2, String.valueOf(info.getLeft()));
+					update.setString(3, info.getGroup());
+					update.setString(4, String.valueOf(info.getExpired()));
+					update.setString(5, name);
+					update.executeUpdate();
+				}
+				else
+				{
+					insert.setString(1, name);
+					insert.setString(2, String.valueOf(info.getTime()));
+					insert.setString(3, String.valueOf(info.getLeft()));
+					insert.setString(4, info.getGroup());
+					insert.setString(5, String.valueOf(info.getExpired()));
+					insert.executeUpdate();
+				}
+			}
+		}
+		catch (SQLException e1)
+		{
+			e1.printStackTrace();
+		}
+	}
+	
 	public static void saveCache(final Connection conn, final HashMap<String, Info> data)
 	{
 		new BukkitRunnable()
@@ -271,7 +321,7 @@ public class Utils
 					PreparedStatement query = conn.prepareStatement(
 							"SELECT * FROM `" + Main.getConfigManager().getPrefix() + "players` WHERE `player` = ?;");
 					PreparedStatement update = conn.prepareStatement(
-							"UPDATE * FROM `" + Main.getConfigManager().getPrefix() + "players` SET `time` = ?,"
+							"UPDATE `" + Main.getConfigManager().getPrefix() + "players` SET `time` = ?,"
 									+ " `left` = ?, `vipg`= ?, `expired` = ? WHERE `player` = ?;");
 					PreparedStatement insert = conn.prepareStatement(
 							"INSERT INTO `" + Main.getConfigManager().getPrefix() + "players` VALUES(?,?,?,?,?);");

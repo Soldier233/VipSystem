@@ -39,6 +39,15 @@ public class DataBase
 		return ca;
 	}
 
+	public void getCache(boolean a)
+	{
+		long start = System.currentTimeMillis();
+		Utils.saveCacheSync(conn, data);
+		long end = System.currentTimeMillis();
+		Long time = end - start;
+		Bukkit.getConsoleSender().sendMessage(MessageManager.gCacheSaved.replace("%time%", String.valueOf(time)));
+	}
+	
 	public void getCache()
 	{
 		long start = System.currentTimeMillis();

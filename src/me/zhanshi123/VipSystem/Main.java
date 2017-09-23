@@ -96,7 +96,7 @@ public class Main extends JavaPlugin
 
 	public void onDisable()
 	{
-		db.getCache();
+		db.getCache(true);
 		Bukkit.getScheduler().cancelTasks(plugin);
 	}
 
@@ -199,6 +199,7 @@ public class Main extends JavaPlugin
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
 		RegisterTasks();
 		km = new KeyManager();
+		new VipAPI();
 		new CustomCommandManager();
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
 		Metrics metrics = new Metrics(this);
