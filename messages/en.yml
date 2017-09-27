@@ -1,3 +1,7 @@
+#此文件是VipSystem的官方翻译语言文件
+#This file is VipSystem offical translation file
+#If you find any issue, Please contact the author to edit it.
+#(Author's English is not very good)
 prefix: '&6&lVipSystem &7>>> &r'
 commands:
   help:

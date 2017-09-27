@@ -1,0 +1,55 @@
+#本文件由singsiaisister@gmail.com翻譯
+#Transalted by singsiaisister@gmail.com
+prefix: '&6&lVipSystem &7>>> &r'
+commands:
+  help:
+    player:
+    - '&6&l==========&a&lVipSystem&6&l=========='
+    - '&3&l- &b/vipsys viptime &9查詢剩餘會員狀況'
+    - '&3&l- &b/vipsys key <CDK> &9使用cdk'
+    admin:
+    - '&3&l- &b/vipsys list &9査詢會員清單'
+    - '&3&l- &b/vipsys look <玩家名> &9查詢指定玩家會員'
+    - '&3&l- &b/vipsys give <玩家名> <VIP组> <时间> &9給一個玩家一段時間的會員'
+    - '&3&l- &b/vipsys remove <玩家名> &9移除目標玩家的會員'
+    - '&3&l- &b/vipsys createkey <数量> <VIP组> <时间> &9創建激活碼'
+    - '&3&l- &b/vipsys export <VIP组> &9到處目標組的無使用的所有激活碼'
+    - '&3&l- &b/vipsys save &9立即保存緩存數據(預設5分鐘一次)'
+    - '&3&l- &b/vipsys reload &9重載除了資料庫(數據庫)部分的設定檔(配置文件)'
+    - '&c注: 時間格式為XdXhXmXs 例如1d為1天 2h為2時 10m為10分鐘 5s為5秒 1d10m5s為1天10分鐘5秒'
+  error:
+    PlayerNotFound: '&c玩家不線上!'
+    AlreadyHaveVip: '&c此玩家已經擁有了會員'
+    HaveNoVip: '&c此玩家沒有會員'
+    YouHaveNoVip: '&c你沒有會員'
+    ConsoleForbid: '&c控制台無法使用這個指令,這個指令僅限于在線上的玩家使用'
+    CodeNotFound: '&c未找到該激活碼'
+    YouAlreadyHaveVip: '&c你已經擁有其他等級的會員了'
+    CodeExportFailed: '&c輸出失敗!因為:%reason%'
+  success:
+    VipGave: '&a成功將會員發送到特定玩家'
+    VipRemoved: '&a這個會員被成功移除'
+    QueriedByAdmin: '&a%player%在%group%的會員組,距離到期還有%left%天，%date%'
+    QueriedByAdminPermanent: '&a%player%擁有永久的%group%會員'
+    QueriedBySelf: '&a你現在是%group%,距離到期還有%left%天，%date%'
+    QueriedBySelfPermanent: '&a你擁有永久的%group%'
+    CacheSaved: '&a保存完成'
+    CodeActivated: '&a使用成功!你獲得了%vip% %left%秒'
+    ThreadCreated: '&a激活碼創建線程已發起，請等待控制台提示資訊!'
+    CodeExport: '&a激活碼已經匯出完畢，用時%time%ms，位置%path%'
+    Showed: '&a會員清單如下 分別對應 玩家名，开通时间(SystemMillis)，剩余秒数，會員組'
+  permanent: '永久'
+#下面的所有颜色代码均为 §
+general:
+  console:
+    CacheSaved: '[VipSystem緩存系統] §a§l對緩存數據進行保存完成，花费了§c%time%§a§lms'
+    CodeCreated: '§6§lVipSystem §7>>> §a創建完成！如果有報錯請仔細查閱問題!用时%time%ms'
+    Loading: '§6§lVipSystem §7>>> §a插件載入中'
+    LoadingComplete: '§6§lVipSystem §7>>> §a插件載入完成 用时%time%ms 作者QQ 1224954468 技术交流群563012939'
+    DatabaseInitError: '§6§lVipSystem §7>>> §c資料庫(數據庫)初始化失敗，停止加載'
+    FailedToGetOnlinePlayers: '§6§lVipSystem §7>>> §a線上玩家數量無法獲取'
+  updater:
+    StartDetecting: '§6§lVipSystem §7>>> §a檢測最新版本'
+    UpdateFailed: '§6§lVipSystem §7>>> §a檢測最新版本失敗'
+    LatestVersion: '§6§lVipSystem §7>>> §a你使用的版本是最新版本'
+    NewUpdate: '§6§lVipSystem §7>>> §a新版本%version%发布了哦，赶快去下載吧!'
