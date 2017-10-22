@@ -1,4 +1,3 @@
-Version: 2.4
 Config:
   language: zh_CN
   #语言，填写VipSystem/messages文件夹中的文件名
@@ -6,10 +5,14 @@ Config:
   #普通玩家的组，如果你需要在玩家vip到期后返回没有vip时的组，请填写 #last
   UUID-Mode: false
   #是否开启UUID模式
+  isGlobal: true
+  #给vip时是否全部世界生效
   KeyWord: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890
   #生成的激活码中包含的字符
   DisplayString: 无
   #如果没有VIP，PlaceholderAPI显示组的变量显示的字符
+  debug: false
+  #是否开启调试模式
   Commands:
     vip:
       activate:
@@ -39,7 +42,6 @@ Config:
       #端口
       base: minecraft
       #库名
-      #表名前缀
       user: 'root'
       #mysql用户名
       pwd: 'pwdhere'

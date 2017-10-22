@@ -76,16 +76,6 @@ public class ConfigManager
 		return config.getBoolean("Config.UUID-Mode", false);
 	}
 
-	public String getVersion()
-	{
-		return config.getString("Version");
-	}
-
-	public void setVersion(String ver)
-	{
-		config.set("Version", ver);
-	}
-
 	public String getKeyWords()
 	{
 		return config.getString("Config.KeyWord");
@@ -144,5 +134,12 @@ public class ConfigManager
 	{
 		config.set("Config.DateFormat", s);
 	}
-
+	
+	public boolean isDebug(){
+		return config.getBoolean("Config.debug",false);
+	}
+	
+	public boolean isGlobal(){
+		return config.getBoolean("Config.isGlobal", true);
+	}
 }

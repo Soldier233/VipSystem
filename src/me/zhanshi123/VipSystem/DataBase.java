@@ -98,12 +98,14 @@ public class DataBase
 			{
 				conn = DriverManager.getConnection(addr, user, pwd);
 			}
+			Utils.debug("尝试建立连接");
 			statement = conn.createStatement();
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + Main.getConfigManager().getPrefix()
 					+ "players` (`player` varchar(64) NOT NULL,`time` varchar(50) NOT NULL,`left` varchar(50) NOT NULL,`vipg` varchar(50) NOT NULL,`expired` varchar(3) NOT NULL,PRIMARY KEY (`player`));");
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS `" + Main.getConfigManager().getPrefix()
 					+ "vipkeys` (`key` varchar(64) NOT NULL,`vipg` varchar(50) NOT NULL,`day` varchar(50) NOT NULL,PRIMARY KEY (`key`));");
 			statement.close();
+			Utils.debug("初始化数据缓存");
 			ca = new MainCache(conn);
 			return true;
 		}
@@ -129,7 +131,7 @@ public class DataBase
 		}
 		else
 		{
-			data = null;
+			date = null;
 		}
 		return date;
 	}

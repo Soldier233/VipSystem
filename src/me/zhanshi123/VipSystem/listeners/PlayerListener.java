@@ -18,6 +18,7 @@ public class PlayerListener implements Listener
 	public void onJoin(PlayerJoinEvent e)
 	{
 		final Player x = e.getPlayer();
+		Utils.debug("玩家加入游戏，并检查缓存中是否有该玩家数据");
 		String name = Utils.getPlayerName(x);
 		Info info = Main.getDataBase().getMainCache().getData(name);
 		if (info == null)
@@ -26,6 +27,7 @@ public class PlayerListener implements Listener
 		}
 		else
 		{
+			Utils.debug("缓存中没有该玩家数据，获取数据");
 			Main.getDataBase().data.put(name, info);
 		}
 		if (Main.getDataBase().exists(name))
@@ -33,7 +35,10 @@ public class PlayerListener implements Listener
 			if (!Main.getDataBase().getGroup(name).equalsIgnoreCase(Main.getPermission().getPrimaryGroup(x)))
 			{
 				Main.getPermission().playerRemoveGroup(x, Main.getPermission().getPrimaryGroup(x));
-				Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
+				if(Main.getConfigManager().isGlobal())
+					Main.getPermission().playerAddGroup(null, x, Main.getDataBase().getGroup(name));
+				else
+					Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
 			}
 			String left = Main.getDataBase().getDate(name).get(1);
 			if (Long.valueOf(left) == -1L)

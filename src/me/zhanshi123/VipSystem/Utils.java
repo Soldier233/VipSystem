@@ -196,7 +196,10 @@ public class Utils
 			}
 		}
 		Main.getPermission().playerRemoveGroup(p, Main.getPermission().getPrimaryGroup(p));
-		Main.getPermission().playerAddGroup(p, group);
+		if(Main.getConfigManager().isGlobal())
+			Main.getPermission().playerAddGroup(null, p, group);
+		else
+			Main.getPermission().playerAddGroup(p, group);
 		Main.getPlaceholderCache().flushData(name);
 		if (last.equalsIgnoreCase(group))
 		{
@@ -373,5 +376,11 @@ public class Utils
 	public static Player getPlayer(String uuid)
 	{
 		return Bukkit.getPlayer(UUID.fromString(uuid));
+	}
+	
+	public static void debug(String msg){
+		if(Main.getConfigManager().isDebug()){
+			Main.getInstance().getLogger().info("ต๗สิ: "+msg);
+		}
 	}
 }

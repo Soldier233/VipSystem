@@ -30,6 +30,7 @@ import me.zhanshi123.VipSystem.managers.ConfigManager;
 import me.zhanshi123.VipSystem.managers.CustomCommandManager;
 import me.zhanshi123.VipSystem.managers.KeyManager;
 import me.zhanshi123.VipSystem.managers.MessageManager;
+import me.zhanshi123.VipSystem.managers.VersionManager;
 import me.zhanshi123.VipSystem.metrics.Metrics;
 import net.milkbowl.vault.permission.Permission;
 
@@ -113,14 +114,18 @@ public class Main extends JavaPlugin
 
 	public boolean initDatabase()
 	{
+		Utils.debug("获取连接信息");
 		List<String> info = cm.getMySQL();
 		String type = cm.getType();
+		Utils.debug("实例化数据库");
 		db = new DataBase(plugin, type);
 		String url = "jdbc:mysql://" + info.get(0) + ":" + info.get(1) + "/" + info.get(2);
 		if (type.equals("mysql"))
 		{
+			Utils.debug("配置MySQL连接信息");
 			db.MySQL(url, info.get(3), info.get(4));
 		}
+		Utils.debug("尝试连接到数据库");
 		if (!db.init())
 		{
 			return false;
@@ -135,27 +140,36 @@ public class Main extends JavaPlugin
 	{
 		saveResource("messages/zh_CN.yml", false);
 		saveResource("messages/en.yml", false);
+		saveResource("messages/zh_TW.yml", false);
 	}
 
+	@SuppressWarnings("unused")
 	public void onEnable()
 	{
 		long start = System.currentTimeMillis();
 		instance = this;
 		saveMessages();
 		initConfig();
+		Utils.debug("初始化版本管理");
+		new VersionManager(this);
+		Utils.debug("初始化语言管理");
 		new MessageManager();
-		double version = Double.valueOf(cm.getVersion());
-		cm.setVersion(getDescription().getVersion());
+		Utils.debug("同步版本信息");
+		double version = Double.valueOf(VersionManager.getInstance().getVersion());
+		VersionManager.getInstance().setVersion(getDescription().getVersion());
+		Utils.debug("初始化数据库");
 		if (initDatabase())
 		{
-
+			Utils.debug("数据库初始化成功");
 		}
 		else
 		{
 			Bukkit.getConsoleSender().sendMessage(MessageManager.DatabaseInitError);
 			setEnabled(false);
+			Utils.debug("数据库初始化失败");
 			return;
 		}
+		Utils.debug("判断上一个版本和该版本并进行相关升级操作");
 		String strver = String.valueOf(version);
 		String[] array = strver.split("\\.");
 		int firstVersion = Integer.valueOf(array[0]);
@@ -193,22 +207,33 @@ public class Main extends JavaPlugin
 			Bukkit.getConsoleSender().sendMessage(
 					MessageManager.prefix.replace("&", "§") + "§aData convert complete! From:" + strver + " To: 2.x");
 		}
-		cm.saveConfig();
+		Utils.debug("版本更新完成(如果没有升级则不处理)");
+		Utils.debug("初始化变量缓存");
 		pc = new PlaceholderCache();
+		Utils.debug("初始化Vault链接");
 		perm = new VaultHook(instance).getPermission();
+		Utils.debug("注册命令");
 		Bukkit.getPluginCommand("vipsys").setExecutor(new Commands());
+		Utils.debug("注册任务");
 		RegisterTasks();
+		Utils.debug("初始化激活码管理器");
 		km = new KeyManager();
+		Utils.debug("初始化API");
 		new VipAPI();
+		Utils.debug("初始化自定义命令管理器");
 		new CustomCommandManager();
+		Utils.debug("注册监听器");
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
+		Utils.debug("初始化数据统计");
 		Metrics metrics = new Metrics(this);
-		boolean b = false;
+		Utils.debug("尝试注册PlaceholderAPI变量");
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
 		{
-			b = new Papi(this).hook();
+			if(new Papi(this).hook()){
+				Utils.debug("PlaceholderAPI变量 注册成功");
+			}
 		}
-
+		Utils.debug("检查在线玩家");
 		for (final Player x : Utils.getOnlinePlayers())
 		{
 			String name = Utils.getPlayerName(x);
@@ -226,7 +251,10 @@ public class Main extends JavaPlugin
 				if (!Main.getDataBase().getGroup(name).equalsIgnoreCase(Main.getPermission().getPrimaryGroup(x)))
 				{
 					Main.getPermission().playerRemoveGroup(x, Main.getPermission().getPrimaryGroup(x));
-					Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
+					if(Main.getConfigManager().isGlobal())
+						Main.getPermission().playerAddGroup(null, x, Main.getDataBase().getGroup(name));
+					else
+						Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
 				}
 				String left = db.getDate(name).get(1);
 				if (Long.valueOf(left) == -1L)
@@ -258,17 +286,18 @@ public class Main extends JavaPlugin
 
 	public void RegisterTasks()
 	{
+		Utils.debug("执行更新检查任务");
 		new BukkitRunnable()
 		{
 			public void run()
 			{
 				double version = updateDetect();
 				String strver = String.valueOf(version);
-				String strver1 = String.valueOf(cm.getVersion());
+				String strver1 = String.valueOf(VersionManager.getInstance().getVersion());
 				VersionComprator compare = new VersionComprator();
 				// 此处版本号判断使用的tapas4java的开源项目
 				// 地址 https://github.com/tapas4java/VersionComprator
-				if (version == Double.valueOf(cm.getVersion()))
+				if (version == Double.valueOf(VersionManager.getInstance().getVersion()))
 				{
 					Bukkit.getConsoleSender().sendMessage(MessageManager.LatestVersion);
 				}
@@ -287,6 +316,7 @@ public class Main extends JavaPlugin
 				}
 			}
 		}.runTaskAsynchronously(plugin);
+		Utils.debug("注册缓存保存任务");
 		new BukkitRunnable()
 		{
 			public void run()
@@ -294,6 +324,7 @@ public class Main extends JavaPlugin
 				db.getCache();
 			}
 		}.runTaskTimer(plugin, 0L, 20 * 300L);
+		Utils.debug("注册VIP到期检查任务");
 		new BukkitRunnable()
 		{
 			public void run()
@@ -312,7 +343,10 @@ public class Main extends JavaPlugin
 						if (!db.getGroup(name).equalsIgnoreCase(perm.getPrimaryGroup(x)))
 						{
 							perm.playerRemoveGroup(x, perm.getPrimaryGroup(x));
-							perm.playerAddGroup(x, db.getGroup(name));
+							if(Main.getConfigManager().isGlobal())
+								Main.getPermission().playerAddGroup(null, x, Main.getDataBase().getGroup(name));
+							else
+								Main.getPermission().playerAddGroup(x, Main.getDataBase().getGroup(name));
 						}
 						String left = db.getDate(name).get(1);
 						if (Long.valueOf(left) == -1L)
