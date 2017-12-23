@@ -52,4 +52,4 @@ general:
     StartDetecting: '§6§lVipSystem §7>>> §aDetecting updates'
     UpdateFailed: '§6§lVipSystem §7>>> §aFailed to get updates'
     LatestVersion: '§6§lVipSystem §7>>> §aYou are running the latest version of VipSystem'
-    NewUpdate: '§6§lVipSystem §7>>> §a%version% has released!'
+    NewUpdate: '§6§lVipSystem §7>>> §a%version% has released! New Features(May be in Chinese):%msg%'

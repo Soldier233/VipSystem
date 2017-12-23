@@ -50,4 +50,4 @@ general:
     StartDetecting: '§6§lVipSystem §7>>> §a检查更新中'
     UpdateFailed: '§6§lVipSystem §7>>> §a获取更新失败'
     LatestVersion: '§6§lVipSystem §7>>> §a你目前使用的版本是最新版'
-    NewUpdate: '§6§lVipSystem §7>>> §a新版本%version%发布了哦，赶快去下载吧!'
+    NewUpdate: '§6§lVipSystem §7>>> §a新版本%version%发布了哦，赶快去下载吧!更新了以下内容:%msg%'

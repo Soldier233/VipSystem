@@ -11,40 +11,30 @@ import me.clip.placeholderapi.external.EZPlaceholderHook;
 import me.zhanshi123.VipSystem.Main;
 import me.zhanshi123.VipSystem.Utils;
 
-public class Papi extends EZPlaceholderHook
-{
-	public Papi(Main plugin)
-	{
-		super(plugin, "VipSystem");
-	}
+public class Papi extends EZPlaceholderHook {
+    public Papi(Main plugin) {
+	super(plugin, "VipSystem");
+    }
 
-	@Override
-	public String onPlaceholderRequest(Player p, String str)
-	{
-		if (str.equalsIgnoreCase("leftdays"))
-		{
-			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLeftDays());
-			else
-				return "0";
-		}
-		else if (str.equalsIgnoreCase("group"))
-		{
-			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getVipGroup());
-			else
-				return Main.getConfigManager().getDisplayString();
-		}
-		else if (str.equalsIgnoreCase("lastgroup"))
-		{
-			if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
-				return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLastGroup());
-			else
-				return Main.getConfigManager().getDisplayString();
-		}
-		else
-		{
-			return null;
-		}
+    @Override
+    public String onPlaceholderRequest(Player p, String str) {
+	if (str.equalsIgnoreCase("leftdays")) {
+	    if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+		return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLeftDays());
+	    else
+		return "0";
+	} else if (str.equalsIgnoreCase("group")) {
+	    if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+		return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getVipGroup());
+	    else
+		return Main.getConfigManager().getDisplayString();
+	} else if (str.equalsIgnoreCase("lastgroup")) {
+	    if (Main.getPlaceholderCache().getData().containsKey(Utils.getPlayerName(p)))
+		return String.valueOf(Main.getPlaceholderCache().getData().get(Utils.getPlayerName(p)).getLastGroup());
+	    else
+		return Main.getConfigManager().getDisplayString();
+	} else {
+	    return null;
 	}
+    }
 }
